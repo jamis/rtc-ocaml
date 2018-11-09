@@ -4,16 +4,9 @@ let lines str = Array.of_list (String.split_on_char '\n' str)
 
 let flood (canvas:RTCCanvas.canvas) color =
   let rec flood_row y =
-    let rec flood_pixels x =
-      if x >= canvas.width then ()
-      else begin
-        RTCCanvas.write_pixel canvas x y color;
-        flood_pixels (x+1);
-      end
-    in
     if y >= canvas.height then ()
     else begin
-      flood_pixels 0;
+      Array.fill canvas.pixels.(y) 0 canvas.width color;
       flood_row (y+1);
     end
   in

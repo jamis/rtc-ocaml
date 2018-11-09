@@ -28,3 +28,10 @@ Executable chap01
   MainIs: chap01.ml
   CompiledObject: best
   BuildDepends: rtc
+
+Executable chap02
+  Install: false
+  Path: progs/02
+  MainIs: chap02.ml
+  CompiledObject: best
+  BuildDepends: rtc

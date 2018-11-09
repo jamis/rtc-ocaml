@@ -1,4 +1,7 @@
 # OASIS_START
-# DO NOT EDIT (digest: 09c69be8bd787ab05951abfe04aea124)
+# DO NOT EDIT (digest: c3b52c1e118d84f5846a8b168800b4c6)
+RTCConst
 RTCTuple
+RTCColor
+RTCCanvas
 # OASIS_STOP
