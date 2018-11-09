@@ -1,0 +1,12 @@
+# OASIS_START
+# DO NOT EDIT (digest: b1e511f86143f51ce0c408394eb61c60)
+version = "0.1"
+description =
+"A ray tracer implementation from the \"Ray Tracer Challenge\" book"
+archive(byte) = "rtc.cma"
+archive(byte, plugin) = "rtc.cma"
+archive(native) = "rtc.cmxa"
+archive(native, plugin) = "rtc.cmxs"
+exists_if = "rtc.cma"
+# OASIS_STOP
+

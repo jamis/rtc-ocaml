@@ -1,0 +1,30 @@
+Name: RTC
+Version: 0.1
+Synopsis: A ray tracer implementation from the "Ray Tracer Challenge" book
+Authors: Jamis Buck <jamis@jamisbuck.org>
+License: LGPL with OCaml linking exception
+
+Description: The Ray Tracer Challenge, by Jamis Buck.
+Homepage: http://www.raytracerchallenge.com
+
+OASISFormat: 0.4
+BuildTools: ocamlbuild
+Plugins: META (0.4), DevFiles (0.4)
+
+Library rtc
+  Path: src
+  Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas
+
+Executable test
+  Install: false
+  Path: tests
+  MainIs: tests.ml
+  CompiledObject: best
+  BuildDepends: oUnit, rtc
+
+Executable chap01
+  Install: false
+  Path: progs/01
+  MainIs: chap01.ml
+  CompiledObject: best
+  BuildDepends: rtc
