@@ -59,4 +59,10 @@ let tests =
       assert_equal "153 255 204 153 255 204 153 255 204 153 255 204 153" ppm.(4);
       assert_equal "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204" ppm.(5);
       assert_equal "153 255 204 153 255 204 153 255 204 153 255 204 153" ppm.(6));
+
+    "PPM files are terminated by a newline" >::
+    (fun test_ctxt ->
+      let c = RTCCanvas.build 5 3 in
+      let raw_ppm = RTCCanvas.to_ppm c in
+      assert_equal '\n' (String.get raw_ppm ((String.length raw_ppm) - 1)));
   ]
