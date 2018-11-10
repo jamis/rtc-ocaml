@@ -13,7 +13,7 @@ Plugins: META (0.4), DevFiles (0.4)
 
 Library rtc
   Path: src
-  Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas
+  Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix
 
 Executable test
   Install: false

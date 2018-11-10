@@ -8,4 +8,5 @@ let () =
        TestTuple.tests;
        TestColor.tests;
        TestCanvas.tests;
+       TestMatrix.tests;
      ])
