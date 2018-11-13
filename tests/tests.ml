@@ -9,4 +9,5 @@ let () =
        TestColor.tests;
        TestCanvas.tests;
        TestMatrix.tests;
+       TestTransform.tests;
      ])

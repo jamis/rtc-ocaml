@@ -57,4 +57,5 @@ let inverse m =
     raise (NotInvertible "matrix is not invertible")
   else
     let calc row col = (cofactor m row col) /. det in
+    (* "calc x y" instead of "calc y x" performs the transpose *)
     Array.mapi (fun y row -> Array.mapi (fun x _ -> calc x y) row) m

@@ -13,7 +13,7 @@ Plugins: META (0.4), DevFiles (0.4)
 
 Library rtc
   Path: src
-  Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix
+  Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix, RTCTransform
 
 Executable test
   Install: false
@@ -33,5 +33,12 @@ Executable chap02
   Install: false
   Path: progs/02
   MainIs: chap02.ml
+  CompiledObject: best
+  BuildDepends: rtc
+
+Executable chap04
+  Install: false
+  Path: progs/04
+  MainIs: chap04.ml
   CompiledObject: best
   BuildDepends: rtc
