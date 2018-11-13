@@ -1,7 +1,6 @@
 let draw_clock width height =
   let cx = width / 2 in
   let cy = height / 2 in
-  let canvas = RTCCanvas.build width height in
   let clr = RTCColor.build 1. 1. 1. in
   let twelve = RTCTuple.point 0. ((float_of_int cy) *. 0.8) 0. in
   let hour_inc = 2. *. Float.pi /. 12. in
@@ -15,7 +14,7 @@ let draw_clock width height =
         RTCCanvas.write_pixel canvas x y clr;
         loop canvas (hour+1)
   in
-  loop canvas 0
+  loop (RTCCanvas.build width height) 0
 
 let () =
   let ppm = RTCCanvas.to_ppm (draw_clock 100 100) in
