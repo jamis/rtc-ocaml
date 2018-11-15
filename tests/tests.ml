@@ -10,4 +10,7 @@ let () =
        TestCanvas.tests;
        TestMatrix.tests;
        TestTransform.tests;
+       TestRay.tests;
+       TestSphere.tests;
+       TestIntersection.tests;
      ])

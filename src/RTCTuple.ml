@@ -23,6 +23,8 @@ let divs a scalar = { x = (a.x /. scalar); y = (a.y /. scalar); z = (a.z /. scal
 let mag vec = sqrt (vec.x ** 2. +. vec.y ** 2. +. vec.z ** 2. +. vec.w ** 2.)
 let norm vec = divs vec (mag vec)
 
+let add_mults p v s = add p (mults v s)
+
 let dot a b = a.x *. b.x +. a.y *. b.y +. a.z *. b.z
 
 let cross a b = vector (a.y *. b.z -. a.z *. b.y)

@@ -1,9 +1,13 @@
 # OASIS_START
-# DO NOT EDIT (digest: 3e1df74819c727977855b25aafc776f9)
+# DO NOT EDIT (digest: a61a26a7228ec3c1bfa9e3b47763f8db)
 RTCConst
 RTCTuple
 RTCColor
 RTCCanvas
 RTCMatrix
 RTCTransform
+RTCRay
+RTCShape
+RTCSphere
+RTCIntersection
 # OASIS_STOP
