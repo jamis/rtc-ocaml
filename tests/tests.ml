@@ -13,4 +13,6 @@ let () =
        TestRay.tests;
        TestSphere.tests;
        TestIntersection.tests;
+       TestLight.tests;
+       TestMaterial.tests;
      ])

@@ -30,3 +30,7 @@ let dot a b = a.x *. b.x +. a.y *. b.y +. a.z *. b.z
 let cross a b = vector (a.y *. b.z -. a.z *. b.y)
                        (a.z *. b.x -. a.x *. b.z)
                        (a.x *. b.y -. a.y *. b.x)
+
+let reflect inv normal =
+  let in_dot_normal = dot inv normal in
+  add_mults inv normal (-2. *. in_dot_normal)

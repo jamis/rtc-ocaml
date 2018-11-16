@@ -14,3 +14,9 @@ let intersect sphere (ray : RTCRay.ray) =
   else let t1 = (-.b -. sqrt(disc)) /. (2. *. a) in
        let t2 = (-.b +. sqrt(disc)) /. (2. *. a) in
        RTCIntersection.list [(RTCIntersection.build t1 sphere); (RTCIntersection.build t2 sphere)]
+
+let normal_at sphere (wpoint : RTCTuple.tuple) =
+  let opoint = RTCMatrix.tmult sphere#inverse_transform wpoint in
+  let onormal = RTCTuple.vector opoint.x opoint.y opoint.z in
+  let wnormal = RTCMatrix.tmult sphere#inverse_transpose_transform onormal in
+  RTCTuple.norm (RTCTuple.vector wnormal.x wnormal.y wnormal.z)

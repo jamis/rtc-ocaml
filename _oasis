@@ -14,7 +14,7 @@ Plugins: META (0.4), DevFiles (0.4)
 Library rtc
   Path: src
   Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix, RTCTransform,
-           RTCRay, RTCShape, RTCSphere, RTCIntersection
+           RTCRay, RTCShape, RTCSphere, RTCIntersection, RTCLight, RTCMaterial
 
 Executable test
   Install: false
@@ -48,5 +48,12 @@ Executable chap05
   Install: false
   Path: progs/05
   MainIs: chap05.ml
+  CompiledObject: best
+  BuildDepends: rtc
+
+Executable chap06
+  Install: false
+  Path: progs/06
+  MainIs: chap06.ml
   CompiledObject: best
   BuildDepends: rtc

@@ -136,4 +136,18 @@ let tests =
       let b = RTCTuple.vector 2. 3. 4. in
       assert (RTCTuple.equal (RTCTuple.cross a b) (RTCTuple.vector (-.1.) 2. (-.1.)));
       assert (RTCTuple.equal (RTCTuple.cross b a) (RTCTuple.vector 1. (-.2.) 1.)));
+
+    "Reflecting a vector approaching at 45°" >::
+    (fun test_ctxt ->
+      let v = RTCTuple.vector 1. (-1.) 0. in
+      let n = RTCTuple.vector 0. 1. 0. in
+      let r = RTCTuple.reflect v n in
+      assert (RTCTuple.equal r (RTCTuple.vector 1. 1. 0.)));
+
+    "Reflecting a vector off a slanted surface" >::
+    (fun test_ctxt ->
+      let v = RTCTuple.vector 0. (-1.) 0. in
+      let n = RTCTuple.vector (sqrt(2.)/.2.) (sqrt(2.)/.2.) 0. in
+      let r = RTCTuple.reflect v n in
+      assert (RTCTuple.equal r (RTCTuple.vector 1. 0. 0.)));
   ]
