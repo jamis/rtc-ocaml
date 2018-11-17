@@ -88,4 +88,13 @@ let tests =
       assert (RTCTuple.equal comps.eyev (RTCTuple.vector 0. 0. (-1.)));
       assert_equal true comps.inside;
       assert (RTCTuple.equal comps.normalv (RTCTuple.vector 0. 0. (-1.))));
+
+    "The hit should offset the point" >::
+    (fun test_ctxt ->
+      let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
+      let shape = new RTCSphere.shape in
+      shape#set_transform (RTCTransform.translation 0. 0. 1.);
+      let i = RTCIntersection.build 5. shape in
+      let comps = RTCComps.prepare i r in
+      assert (comps.point.z < -.RTCConst.epsilon /. 2.));
   ]

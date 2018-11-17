@@ -14,11 +14,22 @@ let intersect (w:world) (r:RTCRay.ray) =
   in
   aux [] w.shapes
 
+let is_shadowed (w:world) (light:RTCLight.point_light) (point:RTCTuple.tuple) =
+  let v = RTCTuple.subtract light.position point in
+  let distance = RTCTuple.mag v in
+  let direction = RTCTuple.norm v in
+  let r = RTCRay.build point direction in
+  let xs = intersect w r in
+  match RTCIntersection.hit xs with
+  | Some hit when hit.t < distance -> true
+  | _ -> false
+
 let shade_hit (w:world) (c:RTCComps.comps) =
   let rec collect acc = function
     | [] -> acc
     | light :: lights ->
-      let result = RTCMaterial.lighting c.shape#material light c.point c.eyev c.normalv in
+      let shadowed = is_shadowed w light c.point in
+      let result = RTCMaterial.lighting c.shape#material light c.point c.eyev c.normalv shadowed in
       collect (RTCColor.add acc result) lights
   in
   collect (RTCColor.black) w.lights

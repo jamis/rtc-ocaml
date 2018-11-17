@@ -65,3 +65,10 @@ Executable chap07
   MainIs: chap07.ml
   CompiledObject: best
   BuildDepends: rtc
+
+Executable chap08
+  Install: false
+  Path: progs/08
+  MainIs: chap08.ml
+  CompiledObject: best
+  BuildDepends: rtc

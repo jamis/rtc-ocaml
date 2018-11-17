@@ -19,20 +19,23 @@ let equal m1 m2 =
   (m1.specular = m2.specular) &&
   (m1.shininess = m2.shininess)
 
-let lighting m (light : RTCLight.point_light) point eyev normalv =
+let lighting m (light : RTCLight.point_light) point eyev normalv shadowed =
   let effective_color = RTCColor.mult m.color light.intensity in
   let lightv = RTCTuple.norm (RTCTuple.subtract light.position point) in
   let ambient = RTCColor.mults effective_color m.ambient in
-  let light_dot_normal = RTCTuple.dot lightv normalv in
-  if light_dot_normal < 0. then
+  if shadowed then
     ambient
   else
-    let diffuse = RTCColor.mults effective_color (m.diffuse *. light_dot_normal) in
-    let reflectv = RTCTuple.reflect (RTCTuple.neg lightv) normalv in
-    let reflect_dot_eye = RTCTuple.dot reflectv eyev in
-    if reflect_dot_eye <= 0. then
-      RTCColor.add ambient diffuse
+    let light_dot_normal = RTCTuple.dot lightv normalv in
+    if light_dot_normal < 0. then
+      ambient
     else
-      let factor = reflect_dot_eye ** m.shininess in
-      let specular = RTCColor.mults light.intensity (m.specular *. factor) in
-      RTCColor.add ambient (RTCColor.add diffuse specular)
+      let diffuse = RTCColor.mults effective_color (m.diffuse *. light_dot_normal) in
+      let reflectv = RTCTuple.reflect (RTCTuple.neg lightv) normalv in
+      let reflect_dot_eye = RTCTuple.dot reflectv eyev in
+      if reflect_dot_eye <= 0. then
+        RTCColor.add ambient diffuse
+      else
+        let factor = reflect_dot_eye ** m.shininess in
+        let specular = RTCColor.mults light.intensity (m.specular *. factor) in
+        RTCColor.add ambient (RTCColor.add diffuse specular)

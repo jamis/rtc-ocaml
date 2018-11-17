@@ -11,4 +11,5 @@ let prepare (i:RTCIntersection.intersection) r =
   let normalv = RTCSphere.normal_at i.shape point in
   let inside = (RTCTuple.dot normalv eyev) < 0. in
   let normalv' = if inside then RTCTuple.neg normalv else normalv in
-  { t=i.t; shape=i.shape; point; eyev; normalv=normalv'; inside }
+  let point' = RTCTuple.add_mults point normalv' RTCConst.epsilon in
+  { t=i.t; shape=i.shape; point=point'; eyev; normalv=normalv'; inside }

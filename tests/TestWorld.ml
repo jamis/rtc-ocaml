@@ -98,4 +98,41 @@ let tests =
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.75) (RTCTuple.vector 0. 0. (-1.)) in
       let c = RTCWorld.color_at w r in
       assert (RTCColor.equal c inner#material.color));
+
+    "There is no shadow when nothing is collinear with point and light" >::
+    (fun test_ctx ->
+      let w = default_world () in
+      let p = RTCTuple.point 0. 10. 0. in
+      assert (not (RTCWorld.is_shadowed w (List.nth w.lights 0) p)));
+
+    "The shadow when an object is between the point and the light" >::
+    (fun test_ctx ->
+      let w = default_world () in
+      let p = RTCTuple.point 10. (-10.) 10. in
+      assert (RTCWorld.is_shadowed w (List.nth w.lights 0) p));
+
+    "There is no shadow when an object is behind the light" >::
+    (fun test_ctx ->
+      let w = default_world () in
+      let p = RTCTuple.point (-20.) 20. (-20.) in
+      assert (not (RTCWorld.is_shadowed w (List.nth w.lights 0) p)));
+
+    "There is no shadow when an object is behind the point" >::
+    (fun test_ctx ->
+      let w = default_world () in
+      let p = RTCTuple.point (-2.) 2. (-2.) in
+      assert (not (RTCWorld.is_shadowed w (List.nth w.lights 0) p)));
+
+    "shade_hit() is given an intersection in shadow" >::
+    (fun test_ctx ->
+      let light = RTCLight.point (RTCTuple.point 0. 0. (-10.)) (RTCColor.build 1. 1. 1.) in
+      let s1 = new RTCSphere.shape in
+      let s2 = new RTCSphere.shape in
+      s2#set_transform (RTCTransform.translation 0. 0. 10.);
+      let w = RTCWorld.build ~shapes:[s1; s2] ~lights:[light] () in
+      let r = RTCRay.build (RTCTuple.point 0. 0. 5.) (RTCTuple.vector 0. 0. 1.) in
+      let i = RTCIntersection.build 4. s2 in
+      let comps = RTCComps.prepare i r in
+      let c = RTCWorld.shade_hit w comps in
+      assert (RTCColor.equal c (RTCColor.build 0.1 0.1 0.1)));
   ]
