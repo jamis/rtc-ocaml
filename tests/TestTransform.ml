@@ -132,4 +132,41 @@ let tests =
       let p = RTCTuple.point 2. 3. 4. in
       let expect = RTCTuple.point 2. 3. 7. in
       assert (RTCTuple.equal expect (RTCMatrix.tmult transform p)));
+
+    "The transformation matrix for the default orientation" >::
+    (fun test_ctxt ->
+      let from_p = RTCTuple.point 0. 0. 0. in
+      let to_p = RTCTuple.point 0. 0. (-1.) in
+      let up_v = RTCTuple.vector 0. 1. 0. in
+      let t = RTCTransform.view from_p to_p up_v in
+      assert (RTCMatrix.equal t RTCMatrix.identity));
+
+    "A view transformation matrix looking in positive z direction" >::
+    (fun test_ctxt ->
+      let from_p = RTCTuple.point 0. 0. 0. in
+      let to_p = RTCTuple.point 0. 0. 1. in
+      let up_v = RTCTuple.vector 0. 1. 0. in
+      let t = RTCTransform.view from_p to_p up_v in
+      assert (RTCMatrix.equal t (RTCTransform.scaling (-1.) 1. (-1.))));
+
+    "The view transformation moves the world" >::
+    (fun test_ctxt ->
+      let from_p = RTCTuple.point 0. 0. 8. in
+      let to_p = RTCTuple.point 0. 0. 0. in
+      let up_v = RTCTuple.vector 0. 1. 0. in
+      let t = RTCTransform.view from_p to_p up_v in
+      assert (RTCMatrix.equal t (RTCTransform.translation 0. 0. (-8.))));
+
+    "An arbitrary view transformation" >::
+    (fun test_ctxt ->
+      let from_p = RTCTuple.point 1. 3. 2. in
+      let to_p = RTCTuple.point 4. (-2.) 8. in
+      let up_v = RTCTuple.vector 1. 1. 0. in
+      let t = RTCTransform.view from_p to_p up_v in
+      let expect = [| [| -0.50709;  0.50709;  0.67612; -2.36643 |];
+                      [|  0.76772;  0.60609;  0.12122; -2.82843 |];
+                      [| -0.35857;  0.59761; -0.71714;  0.00000 |];
+                      [|  0.00000;  0.00000;  0.00000;  1.00000 |] |]
+      in
+      assert (RTCMatrix.equal t expect));
   ]

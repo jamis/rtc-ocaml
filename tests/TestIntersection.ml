@@ -57,4 +57,35 @@ let tests =
       let xs = RTCIntersection.list [i1; i2; i3; i4] in
       let i = RTCIntersection.hit xs in
       assert_equal (Some i4) i);
+
+    "Precomputing the state of an intersection" >::
+    (fun test_ctxt ->
+      let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
+      let shape = new RTCSphere.shape in
+      let i = RTCIntersection.build 4. shape in
+      let comps = RTCComps.prepare i r in
+      assert_equal i.t comps.t;
+      assert_equal i.shape comps.shape;
+      assert (RTCTuple.equal comps.point (RTCTuple.point 0. 0. (-1.)));
+      assert (RTCTuple.equal comps.eyev (RTCTuple.vector 0. 0. (-1.)));
+      assert (RTCTuple.equal comps.normalv (RTCTuple.vector 0. 0. (-1.))));
+
+    "The hit, when an intersection occurs on the outside" >::
+    (fun test_ctxt ->
+      let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
+      let shape = new RTCSphere.shape in
+      let i = RTCIntersection.build 4. shape in
+      let comps = RTCComps.prepare i r in
+      assert_equal false comps.inside);
+
+    "The hit, when an intersection occurs on the inside" >::
+    (fun test_ctxt ->
+      let r = RTCRay.build (RTCTuple.point 0. 0. 0.) (RTCTuple.vector 0. 0. 1.) in
+      let shape = new RTCSphere.shape in
+      let i = RTCIntersection.build 1. shape in
+      let comps = RTCComps.prepare i r in
+      assert (RTCTuple.equal comps.point (RTCTuple.point 0. 0. 1.));
+      assert (RTCTuple.equal comps.eyev (RTCTuple.vector 0. 0. (-1.)));
+      assert_equal true comps.inside;
+      assert (RTCTuple.equal comps.normalv (RTCTuple.vector 0. 0. (-1.))));
   ]

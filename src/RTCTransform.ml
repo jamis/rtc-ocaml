@@ -37,3 +37,16 @@ let shearing xy xz yx yz zx zy =
      [| yx; 1.; yz; 0. |];
      [| zx; zy; 1.; 0. |];
      [| 0.; 0.; 0.; 1. |] |]
+
+let view from_p to_p up_v =
+  let forward = RTCTuple.norm (RTCTuple.subtract to_p from_p) in
+  let up_v' = RTCTuple.norm up_v in
+  let left = RTCTuple.cross forward up_v' in
+  let true_up = RTCTuple.cross left forward in
+  let orientation = [| [|      left.x;      left.y;      left.z; 0. |];
+                       [|   true_up.x;   true_up.y;   true_up.z; 0. |];
+                       [| -.forward.x; -.forward.y; -.forward.z; 0. |];
+                       [|         0. ;         0. ;         0. ; 1. |] |]
+  in
+  let tx = translation (-.from_p.x) (-.from_p.y) (-.from_p.z) in
+  RTCMatrix.mult orientation tx

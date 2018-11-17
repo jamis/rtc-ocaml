@@ -15,4 +15,6 @@ let () =
        TestIntersection.tests;
        TestLight.tests;
        TestMaterial.tests;
+       TestWorld.tests;
+       TestCamera.tests;
      ])
