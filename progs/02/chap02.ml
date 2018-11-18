@@ -3,7 +3,7 @@ let tick (grav, wind) (pos, vel) =
   let vel' = RTCTuple.add vel (RTCTuple.add grav wind) in
   (pos', vel')
 
-let rec run (c:RTCCanvas.canvas) clr env ((pos:RTCTuple.tuple), _ as proj) =
+let rec run (c:RTCCanvas.t) clr env ((pos:RTCTuple.t), _ as proj) =
   if pos.y <= 0. then c
   else let y = c.height - (int_of_float (pos.y +. 0.5)) in
        let x = int_of_float (pos.x +. 0.5) in

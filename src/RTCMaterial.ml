@@ -1,8 +1,8 @@
-type material = { color : RTCColor.tuple;
-                  ambient : float;
-                  diffuse : float;
-                  specular : float;
-                  shininess : float }
+type t = { color : RTCColor.t;
+           ambient : float;
+           diffuse : float;
+           specular : float;
+           shininess : float }
 
 let build ?(color=RTCColor.build 1. 1. 1.)
           ?(ambient=0.1)

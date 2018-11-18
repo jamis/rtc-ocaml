@@ -1,17 +1,17 @@
 open OUnit2
 
 let default_world () =
-  let s1 = new RTCSphere.shape in
+  let s1 = RTCSphere.build () in
   let m1 = RTCMaterial.build ~color:(RTCColor.build 0.8 1.0 0.6)
                              ~diffuse:0.7
                              ~specular:0.2
                              ()
   in
-  s1#set_material m1;
-  let s2 = new RTCSphere.shape in
-  s2#set_transform (RTCTransform.scaling 0.5 0.5 0.5);
+  let s1' = RTCShape.texture s1 m1 in
+  let s2 = RTCSphere.build () in
+  let s2' = RTCShape.transform s2 (RTCTransform.scaling 0.5 0.5 0.5) in
   let light = RTCLight.point (RTCTuple.point (-10.) 10. (-10.)) (RTCColor.build 1. 1. 1.) in
-  RTCWorld.build ~shapes:[s1; s2] ~lights:[light] ()
+  RTCWorld.build ~shapes:[s1'; s2'] ~lights:[light] ()
 
 let tests =
   "World" >:::
@@ -37,10 +37,10 @@ let tests =
       let s2 = List.nth w.shapes 1 in
       let l1 = List.nth w.lights 0 in
       assert_equal l1 light;
-      assert_equal m1 s1#material;
-      assert_equal m2 s2#material;
-      assert_equal RTCMatrix.identity s1#transform;
-      assert_equal t2 s2#transform);
+      assert_equal m1 s1.material;
+      assert_equal m2 s2.material;
+      assert_equal RTCMatrix.identity s1.transform;
+      assert_equal t2 s2.transform);
 
     "Intersect a world with a ray" >::
     (fun test_ctx ->
@@ -92,12 +92,13 @@ let tests =
     (fun test_ctx ->
       let w = default_world () in
       let outer = (List.nth w.shapes 0) in
-      outer#set_material { outer#material with ambient=1.0 };
+      let outer' = RTCShape.texture outer { outer.material with ambient=1.0 } in
       let inner = (List.nth w.shapes 1) in
-      inner#set_material { inner#material with ambient=1.0 };
+      let inner' = RTCShape.texture inner { inner.material with ambient=1.0 } in
+      let w' = { w with shapes=[outer'; inner'] } in
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.75) (RTCTuple.vector 0. 0. (-1.)) in
-      let c = RTCWorld.color_at w r in
-      assert (RTCColor.equal c inner#material.color));
+      let c = RTCWorld.color_at w' r in
+      assert (RTCColor.equal c inner'.material.color));
 
     "There is no shadow when nothing is collinear with point and light" >::
     (fun test_ctx ->
@@ -126,9 +127,8 @@ let tests =
     "shade_hit() is given an intersection in shadow" >::
     (fun test_ctx ->
       let light = RTCLight.point (RTCTuple.point 0. 0. (-10.)) (RTCColor.build 1. 1. 1.) in
-      let s1 = new RTCSphere.shape in
-      let s2 = new RTCSphere.shape in
-      s2#set_transform (RTCTransform.translation 0. 0. 10.);
+      let s1 = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation 0. 0. 10.) in
+      let s2 = RTCSphere.build () in
       let w = RTCWorld.build ~shapes:[s1; s2] ~lights:[light] () in
       let r = RTCRay.build (RTCTuple.point 0. 0. 5.) (RTCTuple.vector 0. 0. 1.) in
       let i = RTCIntersection.build 4. s2 in

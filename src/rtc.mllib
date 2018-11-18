@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: e7079a56eb8cdc30e75e60ebb81fdab1)
+# DO NOT EDIT (digest: e200c347d35d2530075dd51ddfdf2418)
 RTCConst
 RTCTuple
 RTCColor
@@ -15,4 +15,5 @@ RTCMaterial
 RTCWorld
 RTCComps
 RTCCamera
+RTCPlane
 # OASIS_STOP

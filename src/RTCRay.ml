@@ -1,4 +1,4 @@
-type ray = { origin : RTCTuple.tuple; direction : RTCTuple.tuple }
+type t = { origin : RTCTuple.t; direction : RTCTuple.t }
 
 let build origin direction = { origin; direction }
 

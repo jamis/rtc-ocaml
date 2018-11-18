@@ -1,4 +1,4 @@
-type tuple = { x : float; y : float; z : float; w : float }
+type t = { x : float; y : float; z : float; w : float }
 
 let build x y z w = { x; y; z; w; }
 

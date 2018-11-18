@@ -6,11 +6,11 @@ let draw_sphere sphere ray_z wall_z canvas_size =
   let light = RTCLight.point (RTCTuple.point (-10.) 10. (-10.)) (RTCColor.build 1. 1. 1.) in
   let draw_hit canvas r x y = function
     | None -> ()
-    | Some (hit : RTCIntersection.intersection) ->
+    | Some (hit : RTCShape.t RTCIntersection.t) ->
       let point = RTCRay.position r hit.t in
-      let normal = RTCSphere.normal_at hit.shape point in
+      let normal = RTCShape.normal_at hit.shape point in
       let eye = RTCTuple.neg r.direction in
-      let color = RTCMaterial.lighting hit.shape#material light point eye normal false in
+      let color = RTCMaterial.lighting hit.shape.material light point eye normal false in
       RTCCanvas.write_pixel canvas x y color
   in
   let rec render_pixel canvas y = function
@@ -20,7 +20,7 @@ let draw_sphere sphere ray_z wall_z canvas_size =
            let position = RTCTuple.point world_x world_y wall_z in
            let direction = RTCTuple.norm (RTCTuple.subtract position ray_origin) in
            let r = RTCRay.build ray_origin direction in
-           let xs = RTCSphere.intersect sphere r in
+           let xs = RTCShape.intersect sphere r in
            draw_hit canvas r x y (RTCIntersection.hit xs);
            render_pixel canvas y (x+1)
   and render_row canvas = function
@@ -30,14 +30,13 @@ let draw_sphere sphere ray_z wall_z canvas_size =
   render_row (RTCCanvas.build canvas_size canvas_size) 0
 
 let () =
-  let sphere = new RTCSphere.shape in
   let material = RTCMaterial.build
                   ~color:(RTCColor.build 1. 0.2 1.) ()
                   ~specular:0.2
                   ~diffuse:0.7
                   ~shininess: 30.
   in
-  sphere#set_material material;
+  let sphere = RTCShape.texture (RTCSphere.build ()) material in
   let canvas = draw_sphere sphere (-5.) 10. 400 in
   let ppm = RTCCanvas.to_ppm canvas in
   let f = open_out "sphere-shaded.ppm" in

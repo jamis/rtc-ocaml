@@ -15,7 +15,7 @@ Library rtc
   Path: src
   Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix, RTCTransform,
            RTCRay, RTCShape, RTCSphere, RTCIntersection, RTCLight, RTCMaterial,
-           RTCWorld, RTCComps, RTCCamera
+           RTCWorld, RTCComps, RTCCamera, RTCPlane
 
 Executable test
   Install: false
@@ -70,5 +70,12 @@ Executable chap08
   Install: false
   Path: progs/08
   MainIs: chap08.ml
+  CompiledObject: best
+  BuildDepends: rtc
+
+Executable chap09
+  Install: false
+  Path: progs/09
+  MainIs: chap09.ml
   CompiledObject: best
   BuildDepends: rtc

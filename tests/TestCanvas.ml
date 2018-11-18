@@ -2,7 +2,7 @@ open OUnit2
 
 let lines str = Array.of_list (String.split_on_char '\n' str)
 
-let flood (canvas:RTCCanvas.canvas) color =
+let flood (canvas:RTCCanvas.t) color =
   let rec flood_row y =
     if y >= canvas.height then ()
     else begin

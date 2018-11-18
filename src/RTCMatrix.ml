@@ -1,3 +1,5 @@
+type t = float array array
+
 let identity = [| [| 1.; 0.; 0.; 0. |];
                   [| 0.; 1.; 0.; 0. |];
                   [| 0.; 0.; 1.; 0. |];
@@ -13,7 +15,7 @@ let mult a b =
   let compute row col = Array.fold_left (+.) 0. (Array.mapi (fun i _ -> a.(row).(i) *. b.(i).(col)) a) in
   Array.mapi (fun row _ -> Array.mapi (fun col _ -> compute row col) b) a
 
-let tmult a (b:RTCTuple.tuple) =
+let tmult a (b:RTCTuple.t) =
   let x = a.(0).(0) *. b.x +. a.(0).(1) *. b.y +. a.(0).(2) *. b.z +. a.(0).(3) *. b.w in
   let y = a.(1).(0) *. b.x +. a.(1).(1) *. b.y +. a.(1).(2) *. b.z +. a.(1).(3) *. b.w in
   let z = a.(2).(0) *. b.x +. a.(2).(1) *. b.y +. a.(2).(2) *. b.z +. a.(2).(3) *. b.w in

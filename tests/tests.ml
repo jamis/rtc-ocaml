@@ -11,10 +11,12 @@ let () =
        TestMatrix.tests;
        TestTransform.tests;
        TestRay.tests;
-       TestSphere.tests;
        TestIntersection.tests;
        TestLight.tests;
        TestMaterial.tests;
        TestWorld.tests;
        TestCamera.tests;
+       TestShape.tests;
+       TestSphere.tests;
+       TestPlane.tests;
      ])

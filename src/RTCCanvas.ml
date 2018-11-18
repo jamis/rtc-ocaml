@@ -1,12 +1,12 @@
-type canvas = { width : int; height : int;
-                pixels : RTCColor.tuple array array }
+type t = { width : int; height : int;
+           pixels : RTCColor.t array array }
 
 let build width height = { width; height; pixels = Array.make_matrix height width RTCColor.black }
 
 let write_pixel c x y color = c.pixels.(y).(x) <- color
 let pixel_at c x y = c.pixels.(y).(x)
 
-let to_ppm (c:canvas) =
+let to_ppm (c:t) =
   let buffer = Buffer.create 1024 in
   let rec add_rows y =
     let rec add_pixels llen x =

@@ -3,7 +3,7 @@ let tick (grav, wind) (pos, vel) =
   let vel' = RTCTuple.add vel (RTCTuple.add grav wind) in
   (pos', vel')
 
-let rec run env ((pos:RTCTuple.tuple), _ as proj) =
+let rec run env ((pos:RTCTuple.t), _ as proj) =
   if pos.y <= 0. then ()
   else begin
     Printf.printf "(%f, %f)\n" pos.x pos.y;

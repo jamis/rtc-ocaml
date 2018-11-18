@@ -1,4 +1,4 @@
-type tuple = { red : float; green : float; blue : float }
+type t = { red : float; green : float; blue : float }
 
 let build red green blue = { red; green; blue }
 

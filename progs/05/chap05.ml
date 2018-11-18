@@ -15,7 +15,7 @@ let draw_sphere sphere ray_z wall_z canvas_size =
            let position = RTCTuple.point world_x world_y wall_z in
            let direction = RTCTuple.norm (RTCTuple.subtract position ray_origin) in
            let r = RTCRay.build ray_origin direction in
-           let xs = RTCSphere.intersect sphere r in
+           let xs = RTCShape.intersect sphere r in
            draw_hit canvas x y (RTCIntersection.hit xs);
            render_pixel canvas y (x+1)
   and render_row canvas = function
@@ -25,7 +25,7 @@ let draw_sphere sphere ray_z wall_z canvas_size =
   render_row (RTCCanvas.build canvas_size canvas_size) 0
 
 let () =
-  let sphere = new RTCSphere.shape in
+  let sphere = RTCSphere.build () in
   let canvas = draw_sphere sphere (-5.) 10. 100 in
   let ppm = RTCCanvas.to_ppm canvas in
   let f = open_out "sphere.ppm" in

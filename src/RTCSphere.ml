@@ -1,22 +1,16 @@
-class shape =
-  object (self)
-    inherit RTCShape.shape
-  end
-
-let intersect sphere (ray : RTCRay.ray) =
-  let ray2 = RTCRay.transform ray sphere#inverse_transform in
-  let sphere_to_ray = RTCTuple.subtract ray2.origin (RTCTuple.point 0. 0. 0.) in
-  let a = RTCTuple.dot ray2.direction ray2.direction in
-  let b = 2. *. (RTCTuple.dot ray2.direction sphere_to_ray) in
-  let c = (RTCTuple.dot sphere_to_ray sphere_to_ray) -. 1. in
-  let disc = b *. b -. 4. *. a *. c in
-  if disc < 0. then RTCIntersection.list []
-  else let t1 = (-.b -. sqrt(disc)) /. (2. *. a) in
-       let t2 = (-.b +. sqrt(disc)) /. (2. *. a) in
-       RTCIntersection.list [(RTCIntersection.build t1 sphere); (RTCIntersection.build t2 sphere)]
-
-let normal_at sphere (wpoint : RTCTuple.tuple) =
-  let opoint = RTCMatrix.tmult sphere#inverse_transform wpoint in
-  let onormal = RTCTuple.vector opoint.x opoint.y opoint.z in
-  let wnormal = RTCMatrix.tmult sphere#inverse_transpose_transform onormal in
-  RTCTuple.norm (RTCTuple.vector wnormal.x wnormal.y wnormal.z)
+let build () =
+  let local_intersect shape (r:RTCRay.t) =
+    let sphere_to_ray = RTCTuple.subtract r.origin (RTCTuple.point 0. 0. 0.) in
+    let a = RTCTuple.dot r.direction r.direction in
+    let b = 2. *. (RTCTuple.dot r.direction sphere_to_ray) in
+    let c = (RTCTuple.dot sphere_to_ray sphere_to_ray) -. 1. in
+    let disc = b *. b -. 4. *. a *. c in
+    if disc < 0. then RTCIntersection.list []
+    else let t1 = (-.b -. sqrt(disc)) /. (2. *. a) in
+         let t2 = (-.b +. sqrt(disc)) /. (2. *. a) in
+         let i1 = RTCIntersection.build t1 shape in
+         let i2 = RTCIntersection.build t2 shape in
+         RTCIntersection.list [i1; i2]
+  in
+  let local_normal_at shape (point:RTCTuple.t) = RTCTuple.vector point.x point.y point.z in
+  RTCShape.build Sphere local_intersect local_normal_at
