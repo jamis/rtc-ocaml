@@ -40,3 +40,6 @@ let normal_at (shape : t) (wpoint : RTCTuple.t) =
   let onormal = shape.local_normal_at shape opoint in
   let wnormal = RTCMatrix.tmult shape.inverse_transpose_transform onormal in
   RTCTuple.norm (RTCTuple.vector wnormal.x wnormal.y wnormal.z)
+
+let world_to_object (shape : t) (wpoint : RTCTuple.t) =
+  RTCMatrix.tmult shape.inverse_transform wpoint

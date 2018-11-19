@@ -10,7 +10,8 @@ let draw_sphere sphere ray_z wall_z canvas_size =
       let point = RTCRay.position r hit.t in
       let normal = RTCShape.normal_at hit.shape point in
       let eye = RTCTuple.neg r.direction in
-      let color = RTCMaterial.lighting hit.shape.material light point eye normal false in
+      let identity x = x in
+      let color = RTCMaterial.lighting hit.shape.material identity light point eye normal false in
       RTCCanvas.write_pixel canvas x y color
   in
   let rec render_pixel canvas y = function

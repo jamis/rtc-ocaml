@@ -29,7 +29,8 @@ let shade_hit (w:t) (c:RTCComps.t) =
     | [] -> acc
     | light :: lights ->
       let shadowed = is_shadowed w light c.point in
-      let result = RTCMaterial.lighting c.shape.material light c.point c.eyev c.normalv shadowed in
+      let transform = RTCShape.world_to_object c.shape in
+      let result = RTCMaterial.lighting c.shape.material transform light c.point c.eyev c.normalv shadowed in
       collect (RTCColor.add acc result) lights
   in
   collect (RTCColor.black) w.lights
