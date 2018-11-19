@@ -3,8 +3,12 @@ open RTCComposition
 let half_pi = Float.pi /. 2.
 let qtr_pi = Float.pi /. 4.
 
+let solid r g b = RTCPattern.Solid (RTCColor.build r g b)
+
 let scene () =
-  let pattern' = RTCPattern.checkers (RTCColor.build 1. 0.2 0.4) (RTCColor.build 0.9 0.9 1.0) in
+  let subpat' = RTCPattern.checkers (solid 0.65 0.2 0.65) (solid 0.75 0.25 0.75) in
+  let subpat = RTCPattern.transform subpat' (RTCTransform.scaling 0.25 0.25 0.25) in
+  let pattern' = RTCPattern.checkers (RTCPattern.Pattern subpat) (solid 0.9 0.9 1.0) in
   let pattern = Some (RTCPattern.transform pattern' (RTCTransform.scaling 0.5 0.5 0.5)) in
 
   let floor = RTCShape.texture (RTCPlane.build ())
@@ -26,7 +30,7 @@ let scene () =
   let right_wall = RTCShape.texture right_wall' floor.material in
 
   let tx = compose [Scale (0.2, 0.2, 0.2); RotateX (-.Float.pi /. 3.)] in
-  let ring = RTCPattern.transform (RTCPattern.ring (RTCColor.build 0. 0.3 0.6) (RTCColor.build 0.1 1. 0.8)) tx in
+  let ring = RTCPattern.transform (RTCPattern.ring (solid 0. 0.3 0.6) (solid 0.1 1. 0.8)) tx in
   let middle' = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation (-0.5) 1. 0.5) in
   let middle = RTCShape.texture middle' (RTCMaterial.build ~pattern:(Some ring)
                                          ~diffuse:0.7
@@ -35,7 +39,7 @@ let scene () =
   in
 
   let tx = compose [Scale (0.2, 0.2, 0.2); RotateZ (-.Float.pi /. 4.)] in
-  let stripe = RTCPattern.transform (RTCPattern.stripe (RTCColor.build 0. 0.3 0.6) (RTCColor.build 0.1 1. 0.8)) tx in
+  let stripe = RTCPattern.transform (RTCPattern.stripe (solid 0. 0.3 0.6) (solid 0.1 1. 0.8)) tx in
   let tx = compose [Scale (0.5, 0.5, 0.5); Translate (1.5, 0.5, -0.5)] in
   let right' = RTCShape.transform (RTCSphere.build ()) tx in
   let right = RTCShape.texture right' (RTCMaterial.build ~pattern:(Some stripe)
@@ -45,7 +49,7 @@ let scene () =
   in
 
   let tx = compose [Scale (2., 2., 2.); Translate (-1., 0., 0.)] in
-  let gradient = RTCPattern.transform (RTCPattern.gradient (RTCColor.build 1. 0. 0.) (RTCColor.build 0. 1. 1.)) tx in
+  let gradient = RTCPattern.transform (RTCPattern.gradient (solid 1. 0. 0.) (solid 0. 1. 1.)) tx in
   let tx = compose [Scale (0.33, 0.33, 0.33); Translate (-1.5, 0.33, -0.75)] in
   let left' = RTCShape.transform (RTCSphere.build ()) tx in
   let left = RTCShape.texture left' (RTCMaterial.build ~pattern:(Some gradient)

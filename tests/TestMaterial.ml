@@ -69,7 +69,7 @@ let tests =
 
     with_setup "Lighting with a pattern applied"
     (fun m' position test_ctxt ->
-      let pattern = RTCPattern.stripe RTCColor.white RTCColor.black in
+      let pattern = RTCPattern.stripe (Solid RTCColor.white) (Solid RTCColor.black) in
       let m = { m' with pattern=Some pattern; ambient=1.; diffuse=0.; specular=0. } in
       let eyev = RTCTuple.vector 0. 0. (-1.) in
       let normalv = RTCTuple.vector 0. 0. (-1.) in

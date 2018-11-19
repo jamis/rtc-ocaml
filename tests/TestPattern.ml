@@ -1,8 +1,11 @@
 open OUnit2
 
 let test_pattern () =
-  let fn (point:RTCTuple.t) = RTCColor.build point.x point.y point.z in
+  let fn (point:RTCTuple.t) = RTCPattern.Solid (RTCColor.build point.x point.y point.z) in
   RTCPattern.build fn
+
+let white_pattern = RTCPattern.Solid RTCColor.white
+let black_pattern = RTCPattern.Solid RTCColor.black
 
 let tests =
   "Patterns" >:::
@@ -45,70 +48,70 @@ let tests =
 
     "A stripe pattern is constant in y" >::
     (fun test_ctxt ->
-      let pattern = RTCPattern.stripe RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 1. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 2. 0.))));
+      let pattern = RTCPattern.stripe white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 1. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 2. 0.)));
 
     "A stripe pattern is constant in z" >::
     (fun test_ctxt ->
-      let pattern = RTCPattern.stripe RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 1.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 2.))));
+      let pattern = RTCPattern.stripe white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 1.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 2.)));
 
     "A stripe pattern alternates in x" >::
     (fun test_ctxt ->
-      let pattern = RTCPattern.stripe RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0.9 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 1. 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point (-0.1) 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point (-1.) 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point (-1.1) 0. 0.))));
+      let pattern = RTCPattern.stripe white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0.9 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 1. 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point (-0.1) 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point (-1.) 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point (-1.1) 0. 0.)));
 
     "A gradient linearly interpolates between colors" >::
     ( fun test_ctxt ->
-      let pattern = RTCPattern.gradient RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal (RTCColor.build 0.75 0.75 0.75) (pattern.fn (RTCTuple.point 0.25 0. 0.)));
-      assert (RTCColor.equal (RTCColor.build 0.5 0.5 0.5) (pattern.fn (RTCTuple.point 0.5 0. 0.)));
-      assert (RTCColor.equal (RTCColor.build 0.25 0.25 0.25) (pattern.fn (RTCTuple.point 0.75 0. 0.))));
+      let pattern = RTCPattern.gradient white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal (RTCPattern.Solid (RTCColor.build 0.75 0.75 0.75)) (pattern.fn (RTCTuple.point 0.25 0. 0.));
+      assert_equal (RTCPattern.Solid (RTCColor.build 0.5 0.5 0.5)) (pattern.fn (RTCTuple.point 0.5 0. 0.));
+      assert_equal (RTCPattern.Solid (RTCColor.build 0.25 0.25 0.25)) (pattern.fn (RTCTuple.point 0.75 0. 0.)));
 
     "A ring should extend in both x and z" >::
     ( fun test_ctxt ->
-      let pattern = RTCPattern.ring RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 1. 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 0. 0. 1.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 0.708 0. 0.708))));
+      let pattern = RTCPattern.ring white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 1. 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 0. 0. 1.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 0.708 0. 0.708)));
 
     "A ring should extend in both x and z" >::
     ( fun test_ctxt ->
-      let pattern = RTCPattern.ring RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 1. 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 0. 0. 1.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 0.708 0. 0.708))));
+      let pattern = RTCPattern.ring white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 1. 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 0. 0. 1.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 0.708 0. 0.708)));
 
     "Checkers should repeat in x" >::
     ( fun test_ctxt ->
-      let pattern = RTCPattern.checkers RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0.99 0. 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 1.01 0. 0.))));
+      let pattern = RTCPattern.checkers white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0.99 0. 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 1.01 0. 0.)));
 
     "Checkers should repeat in y" >::
     ( fun test_ctxt ->
-      let pattern = RTCPattern.checkers RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0.99 0.)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 0. 1.01 0.))));
+      let pattern = RTCPattern.checkers white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0.99 0.));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 0. 1.01 0.)));
 
     "Checkers should repeat in z" >::
     ( fun test_ctxt ->
-      let pattern = RTCPattern.checkers RTCColor.white RTCColor.black in
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.)));
-      assert (RTCColor.equal RTCColor.white (pattern.fn (RTCTuple.point 0. 0. 0.99)));
-      assert (RTCColor.equal RTCColor.black (pattern.fn (RTCTuple.point 0. 0. 1.01))));
+      let pattern = RTCPattern.checkers white_pattern black_pattern in
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.));
+      assert_equal white_pattern (pattern.fn (RTCTuple.point 0. 0. 0.99));
+      assert_equal black_pattern (pattern.fn (RTCTuple.point 0. 0. 1.01)));
   ]
