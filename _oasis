@@ -86,3 +86,10 @@ Executable chap10
   MainIs: chap10.ml
   CompiledObject: best
   BuildDepends: rtc
+
+Executable chap11
+  Install: false
+  Path: progs/11
+  MainIs: chap11.ml
+  CompiledObject: best
+  BuildDepends: rtc

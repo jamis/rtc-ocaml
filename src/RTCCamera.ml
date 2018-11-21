@@ -31,7 +31,7 @@ let render c w =
   let rec render_yx canvas y = function
     | x when x >= c.hsize -> render_y canvas (y+1)
     | x -> let ray = ray_for_pixel c x y in
-           let color = RTCWorld.color_at w ray in
+           let color = RTCWorld.color_at w ray 5 in
            RTCCanvas.write_pixel canvas x y color;
            render_yx canvas y (x+1)
   and render_y canvas = function

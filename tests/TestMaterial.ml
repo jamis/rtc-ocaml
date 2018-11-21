@@ -19,6 +19,17 @@ let tests =
       assert_equal m.specular 0.9;
       assert_equal m.shininess 200.0);
 
+    "Reflectivity for the default material" >::
+    (fun test_ctxt ->
+      let m = RTCMaterial.build () in
+      assert_equal m.reflective 0.0);
+
+    "Transparency and Refractive Index for the default material" >::
+    (fun test_ctxt ->
+      let m = RTCMaterial.build () in
+      assert_equal m.transparency 0.;
+      assert_equal m.refractive_index 1.);
+
     with_setup "Lighting with the eye between the light and the surface"
     (fun m position test_ctxt ->
       let eyev = RTCTuple.vector 0. 0. (-1.) in

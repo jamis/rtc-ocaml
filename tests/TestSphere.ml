@@ -1,5 +1,9 @@
 open OUnit2
 
+let glass_sphere () =
+  let sphere = RTCSphere.build () in
+  RTCShape.texture sphere (RTCMaterial.build ~transparency:1.0 ~refractive_index:1.5 ())
+
 let tests =
   "Spheres" >:::
   [
@@ -102,4 +106,11 @@ let tests =
       let r3 = sqrt(3.) /. 3. in
       let n = RTCShape.normal_at s (RTCTuple.point r3 r3 r3) in
       assert (RTCTuple.equal n (RTCTuple.norm n)));
+
+    "A helper for producing a sphere with a glassy material" >::
+    (fun test_ctxt ->
+      let s = glass_sphere () in
+      assert (RTCMatrix.equal RTCMatrix.identity s.transform);
+      assert_equal 1.0 s.material.transparency;
+      assert_equal 1.5 s.material.refractive_index);
   ]

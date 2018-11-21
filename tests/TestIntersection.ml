@@ -69,7 +69,7 @@ let tests =
       let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
       let shape = RTCSphere.build () in
       let i = RTCIntersection.build 4. shape in
-      let comps = RTCComps.prepare i r in
+      let comps = RTCComps.prepare i r [i] in
       assert_equal i.t comps.t;
       assert (i.shape == comps.shape);
       assert (RTCTuple.equal comps.point (RTCTuple.point 0. 0. (-1.)));
@@ -81,7 +81,7 @@ let tests =
       let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
       let shape = RTCSphere.build () in
       let i = RTCIntersection.build 4. shape in
-      let comps = RTCComps.prepare i r in
+      let comps = RTCComps.prepare i r [i] in
       assert_equal false comps.inside);
 
     "The hit, when an intersection occurs on the inside" >::
@@ -89,7 +89,7 @@ let tests =
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.) (RTCTuple.vector 0. 0. 1.) in
       let shape = RTCSphere.build () in
       let i = RTCIntersection.build 1. shape in
-      let comps = RTCComps.prepare i r in
+      let comps = RTCComps.prepare i r [i] in
       assert (RTCTuple.equal comps.point (RTCTuple.point 0. 0. 1.));
       assert (RTCTuple.equal comps.eyev (RTCTuple.vector 0. 0. (-1.)));
       assert_equal true comps.inside;
@@ -100,6 +100,106 @@ let tests =
       let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
       let shape = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation 0. 0. 1.) in
       let i = RTCIntersection.build 5. shape in
-      let comps = RTCComps.prepare i r in
+      let comps = RTCComps.prepare i r [i] in
       assert (comps.point.z < -.RTCConst.epsilon /. 2.));
+
+    "Precomputing the reflection vector" >::
+    (fun test_ctxt ->
+      let shape = RTCPlane.build () in
+      let r = RTCRay.build (RTCTuple.point 0. 1. (-1.)) (RTCTuple.vector 0. (-.(sqrt 2.)/.2.) ((sqrt 2.)/.2.)) in
+      let i = RTCIntersection.build (sqrt 2.) shape in
+      let comps = RTCComps.prepare i r [i] in
+      assert (RTCTuple.equal comps.reflectv (RTCTuple.vector 0. ((sqrt 2.)/.2.) ((sqrt 2.)/.2.))));
+
+    "Finding n1 and n2 at various intersections" >::
+    (fun test_ctxt ->
+      let a =
+        let sphere = TestSphere.glass_sphere () in
+        let transform = RTCTransform.scaling 2. 2. 2. in
+        let material = { sphere.material with refractive_index=1.5 } in
+        RTCShape.transform (RTCShape.texture sphere material) transform
+      in
+      let b =
+        let sphere = TestSphere.glass_sphere () in
+        let transform = RTCTransform.translation 0. 0. (-0.25) in
+        let material = { sphere.material with refractive_index=2. } in
+        RTCShape.transform (RTCShape.texture sphere material) transform
+      in
+      let c =
+        let sphere = TestSphere.glass_sphere () in
+        let transform = RTCTransform.translation 0. 0. 0.25 in
+        let material = { sphere.material with refractive_index=2.5 } in
+        RTCShape.transform (RTCShape.texture sphere material) transform
+      in
+      let r = RTCRay.build (RTCTuple.point 0. 0. (-4.)) (RTCTuple.vector 0. 0. 1.) in
+      let xs =
+        let x0 = RTCIntersection.build 2. a in
+        let x1 = RTCIntersection.build 2.75 b in
+        let x2 = RTCIntersection.build 3.25 c in
+        let x3 = RTCIntersection.build 4.75 b in
+        let x4 = RTCIntersection.build 5.25 c in
+        let x5 = RTCIntersection.build 6. a in
+        RTCIntersection.list [x0; x1; x2; x3; x4; x5]
+      in
+      let expect = [(0, 1.0, 1.5);
+                    (1, 1.5, 2.0);
+                    (2, 2.0, 2.5);
+                    (3, 2.5, 2.5);
+                    (4, 2.5, 1.5);
+                    (5, 1.5, 1.0)]
+      in
+      let rec loop expect xrest = match expect with
+        | [] -> ()
+        | (index, n1, n2) :: rest ->
+          match xrest with
+          | [] -> ()
+          | x :: xrest ->
+            let comps = RTCComps.prepare x r xs in
+            assert_equal ~msg:(Printf.sprintf "n1:%f != %f" n1 comps.n1) n1 comps.n1;
+            assert_equal ~msg:(Printf.sprintf "n2:%f != %f" n2 comps.n2) n2 comps.n2;
+            loop rest xrest
+      in
+      loop expect xs);
+
+    "The under point is offset below the surface" >::
+    (fun test_ctxt ->
+      let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
+      let shape = RTCShape.transform (TestSphere.glass_sphere ()) (RTCTransform.translation 0. 0. 1.) in
+      let i = RTCIntersection.build 5. shape in
+      let comps = RTCComps.prepare i r [i] in
+      assert (comps.under_point.z > RTCConst.epsilon /. 2.));
+
+    "The Schlick approximation under total internal reflection" >::
+    (fun test_ctxt ->
+      let shape = TestSphere.glass_sphere () in
+      let r = RTCRay.build (RTCTuple.point 0. 0. (sqrt(2.)/.2.)) (RTCTuple.vector 0. 1. 0.) in
+      let xs =
+        let x1 = RTCIntersection.build (-.sqrt(2.)/.2.) shape in
+        let x2 = RTCIntersection.build (sqrt(2.)/.2.) shape in
+        [ x1; x2 ]
+      in
+      let comps = RTCComps.prepare (List.nth xs 1) r xs in
+      assert_equal 1. (RTCComps.schlick comps));
+
+    "The Schlick approximation with a perpendicular viewing angle" >::
+    (fun test_ctxt ->
+      let shape = TestSphere.glass_sphere () in
+      let r = RTCRay.build (RTCTuple.point 0. 0. 0.) (RTCTuple.vector 0. 1. 0.) in
+      let xs =
+        let x1 = RTCIntersection.build (-1.) shape in
+        let x2 = RTCIntersection.build 1. shape in
+        [ x1; x2 ]
+      in
+      let comps = RTCComps.prepare (List.nth xs 1) r xs in
+      let reflectance = RTCComps.schlick comps in
+      assert ((abs_float (reflectance -. 0.04)) < RTCConst.epsilon));
+
+    "The Schlick approximation with small angle and n2 > n1" >::
+    (fun test_ctxt ->
+      let shape = TestSphere.glass_sphere () in
+      let r = RTCRay.build (RTCTuple.point 0. 0.99 (-2.)) (RTCTuple.vector 0. 0. 1.) in
+      let xs = [ RTCIntersection.build 1.8589 shape ] in
+      let comps = RTCComps.prepare (List.nth xs 0) r xs in
+      let reflectance = RTCComps.schlick comps in
+      assert ((abs_float (reflectance -. 0.48873)) < RTCConst.epsilon));
   ]

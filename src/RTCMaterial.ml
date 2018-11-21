@@ -3,7 +3,10 @@ type t = { color : RTCColor.t;
            ambient : float;
            diffuse : float;
            specular : float;
-           shininess : float }
+           shininess : float;
+           reflective : float;
+           transparency: float;
+           refractive_index: float; }
 
 let build ?(color=RTCColor.build 1. 1. 1.)
           ?(pattern=None)
@@ -11,15 +14,22 @@ let build ?(color=RTCColor.build 1. 1. 1.)
           ?(diffuse=0.9)
           ?(specular=0.9)
           ?(shininess=200.0)
+          ?(reflective=0.0)
+          ?(transparency=0.0)
+          ?(refractive_index=1.0)
           () =
-  { color; pattern; ambient; diffuse; specular; shininess }
+  { color; pattern; ambient; diffuse; specular; shininess;
+    reflective; transparency; refractive_index }
 
 let equal m1 m2 =
   (RTCColor.equal m1.color m2.color) &&
   (m1.ambient = m2.ambient) &&
   (m1.diffuse = m2.diffuse) &&
   (m1.specular = m2.specular) &&
-  (m1.shininess = m2.shininess)
+  (m1.shininess = m2.shininess) &&
+  (m1.reflective = m2.reflective) &&
+  (m1.transparency = m2.transparency) &&
+  (m1.refractive_index = m2.refractive_index)
 
 let lighting m transform (light : RTCLight.point_light) point eyev normalv shadowed =
   let color = match m.pattern with
