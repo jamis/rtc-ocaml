@@ -20,4 +20,5 @@ let () =
        TestShape.tests;
        TestSphere.tests;
        TestPlane.tests;
+       TestCube.tests;
      ])

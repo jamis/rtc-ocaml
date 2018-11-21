@@ -15,7 +15,8 @@ Library rtc
   Path: src
   Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix, RTCTransform,
            RTCRay, RTCShape, RTCSphere, RTCIntersection, RTCLight, RTCMaterial,
-           RTCWorld, RTCComps, RTCCamera, RTCPlane, RTCPattern, RTCComposition
+           RTCWorld, RTCComps, RTCCamera, RTCPlane, RTCPattern, RTCComposition,
+           RTCCube
 
 Executable test
   Install: false
@@ -24,72 +25,9 @@ Executable test
   CompiledObject: best
   BuildDepends: oUnit, rtc
 
-Executable chap01
+Executable chapter
   Install: false
-  Path: progs/01
-  MainIs: chap01.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap02
-  Install: false
-  Path: progs/02
-  MainIs: chap02.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap04
-  Install: false
-  Path: progs/04
-  MainIs: chap04.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap05
-  Install: false
-  Path: progs/05
-  MainIs: chap05.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap06
-  Install: false
-  Path: progs/06
-  MainIs: chap06.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap07
-  Install: false
-  Path: progs/07
-  MainIs: chap07.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap08
-  Install: false
-  Path: progs/08
-  MainIs: chap08.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap09
-  Install: false
-  Path: progs/09
-  MainIs: chap09.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap10
-  Install: false
-  Path: progs/10
-  MainIs: chap10.ml
-  CompiledObject: best
-  BuildDepends: rtc
-
-Executable chap11
-  Install: false
-  Path: progs/11
-  MainIs: chap11.ml
+  Path: progs
+  MainIs: chapter.ml
   CompiledObject: best
   BuildDepends: rtc

@@ -173,10 +173,11 @@ let air_bubble_scene () =
   (world, camera)
 
 
-let () =
+let run () =
   let (world, camera) = scene () in
 
   let image = RTCCamera.render camera world in
   let ppm = RTCCanvas.to_ppm image in
-  let f = open_out "reflect-refract.ppm" in
-  output_string f ppm
+  let f = open_out "11-reflect-refract.ppm" in
+  output_string f ppm;
+  Printf.printf "wrote `11-reflect-refract.ppm'\n"

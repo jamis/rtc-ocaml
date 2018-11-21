@@ -16,7 +16,8 @@ let draw_clock width height =
   in
   loop (RTCCanvas.build width height) 0
 
-let () =
+let run () =
   let ppm = RTCCanvas.to_ppm (draw_clock 100 100) in
-  let f = open_out "clock.ppm" in
-  output_string f ppm
+  let f = open_out "04-clock.ppm" in
+  output_string f ppm;
+  Printf.printf "wrote `04-clock.ppm'\n"

@@ -50,7 +50,7 @@ let scene () =
   let light = RTCLight.point (RTCTuple.point 0. 0. (-100.)) (RTCColor.build 1. 1. 1.) in
   RTCWorld.build ~shapes:[wall; palm; wrist; thumb; index; middle; ring; pinky] ~lights:[light] ()
 
-let () =
+let run () =
   let world = scene () in
 
   let view = RTCTransform.view (RTCTuple.point 40. 0. (-70.)) (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 1. 0.) in
@@ -58,5 +58,6 @@ let () =
 
   let image = RTCCamera.render camera world in
   let ppm = RTCCanvas.to_ppm image in
-  let f = open_out "puppets.ppm" in
-  output_string f ppm
+  let f = open_out "08-.ppm" in
+  output_string f ppm;
+  Printf.printf "wrote `08-puppets.ppm'\n"
