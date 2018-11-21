@@ -20,7 +20,8 @@ let is_shadowed (w:t) (light:RTCLight.point_light) (point:RTCTuple.t) =
   let direction = RTCTuple.norm v in
   let r = RTCRay.build point direction in
   let xs = intersect w r in
-  match RTCIntersection.hit xs with
+  let allow (x:RTCShape.t RTCIntersection.t) = x.shape.shadow in
+  match RTCIntersection.hit ~allow:allow xs with
   | Some hit when hit.t < distance -> true
   | _ -> false
 

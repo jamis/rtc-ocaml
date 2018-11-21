@@ -14,7 +14,8 @@ and t = { shape : shape_t;
           inverse_transpose_transform : RTCMatrix.t;
           material : RTCMaterial.t;
           local_intersect : intersect_t;
-          local_normal_at : normal_t }
+          local_normal_at : normal_t;
+          shadow : bool }
 
 let build (shape : shape_t) (isect : intersect_t) (normal : normal_t)=
   { shape;
@@ -23,7 +24,8 @@ let build (shape : shape_t) (isect : intersect_t) (normal : normal_t)=
     inverse_transpose_transform=RTCMatrix.identity;
     material=RTCMaterial.build ();
     local_intersect=isect;
-    local_normal_at=normal }
+    local_normal_at=normal;
+    shadow=true }
 
 let transform (shape : t) transform =
   let inverse_transform = RTCMatrix.inverse transform in
