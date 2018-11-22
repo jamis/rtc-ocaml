@@ -21,4 +21,5 @@ let () =
        TestSphere.tests;
        TestPlane.tests;
        TestCube.tests;
+       TestCylinder.tests;
      ])

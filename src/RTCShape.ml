@@ -4,6 +4,7 @@ type shape_t =
   | Sphere
   | Plane
   | Cube
+  | Cylinder of float * float * bool
   | TestShape of test_shape_data
 
 type intersect_t = t -> RTCRay.t -> t RTCIntersection.xslist
