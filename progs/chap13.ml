@@ -3,7 +3,7 @@ open RTCComposition
 let solid r g b = RTCPattern.Solid (RTCColor.build r g b)
 let color = RTCColor.build
 
-let scene () =
+let scene ?(pure=true) () =
   let floor =
     let plane = RTCPlane.build () in
     let material =
@@ -126,7 +126,31 @@ let scene () =
 
   let shapes = [ floor; c1; c2; c3; c4; c5; c6; c7; c8; c9; c10 ] in
 
-  let world = RTCWorld.build ~shapes:shapes ~lights:[light] () in
+  let shapes' = if not pure then
+    let cone1 =
+      let cone = RTCCone.build ~minimum:(-1.) ~maximum:0. () in
+      let transform = compose [ Scale (0.1, 0.25, 0.1); Translate (0., 0.55, (-0.75)) ] in
+      let material = RTCMaterial.build ~color:(color 0.8 0.2 0.3)
+                                       ~ambient:0.1 ~diffuse:0.7 ~specular:0.9
+                                       ~shininess:300. ~reflective:0.2 ()
+      in
+      RTCShape.transform (RTCShape.texture cone material) transform
+    in
+    let cone2 =
+      let cone = RTCCone.build ~minimum:(-1.) ~maximum:(-0.5) () in
+      let transform = compose [ Scale (0.2, 0.5, 0.2); Translate (1., 1., 0.) ] in
+      RTCShape.transform (RTCShape.texture cone c5.material) transform
+    in
+    let cone3 =
+      let cone = RTCCone.build ~minimum:(-1.) ~maximum:0. () in
+      let transform = compose [ Scale (0.1, 0.5, 0.1); Translate (1., 1.25, 0.) ] in
+      RTCShape.transform (RTCShape.texture cone c5.material) transform
+    in
+    cone1 :: cone2 :: cone3 :: shapes
+  else shapes
+  in
+
+  let world = RTCWorld.build ~shapes:shapes' ~lights:[light] () in
 
   let view =
     let from_p = RTCTuple.point 8. 3.5 (-9.) in
@@ -140,8 +164,8 @@ let scene () =
   (world, camera)
 
 
-let run () =
-  let (world, camera) = scene () in
+let run ?(pure=true) () =
+  let (world, camera) = scene ~pure:pure () in
 
   let image = RTCCamera.render camera world in
   let ppm = RTCCanvas.to_ppm image in

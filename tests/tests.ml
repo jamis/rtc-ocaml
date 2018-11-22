@@ -22,4 +22,5 @@ let () =
        TestPlane.tests;
        TestCube.tests;
        TestCylinder.tests;
+       TestCone.tests;
      ])
