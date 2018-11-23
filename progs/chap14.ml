@@ -30,7 +30,7 @@ let make_hexagon () =
 let hexagon_scene () =
   let hexagon =
     let shape = make_hexagon () in
-    let material = RTCMaterial.build ~diffuse:0.2 ~specular:0.6 ~ambient:0. ~shininess:50. ~reflective:0.6 () in
+    let material = RTCMaterial.build ~color:(color 1. 0.2 0.4) ~diffuse:0.8 ~specular:0.6 ~ambient:0. ~shininess:50. ~reflective:0.3 () in
     RTCShape.texture shape material
   in
 
@@ -45,7 +45,7 @@ let hexagon_scene () =
     RTCTransform.view from_p to_p up_v
   in
 
-  let camera = RTCCamera.build 400 200 0.3 view in
+  let camera = RTCCamera.build 800 400 0.3 view in
 
   (world, camera)
 
@@ -155,7 +155,7 @@ let book_scene () =
   (world, camera)
 
 let run () =
-  let (world, camera) = book_scene () in
+  let (world, camera) = hexagon_scene () in
 
   let image = RTCCamera.render camera world in
   let ppm = RTCCanvas.to_ppm image in
