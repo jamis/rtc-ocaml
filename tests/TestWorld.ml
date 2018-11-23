@@ -61,7 +61,7 @@ let tests =
       let w = default_world () in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-5.)) (RTCTuple.vector 0. 0. 1.) in
       let shape = List.nth w.shapes 0 in
-      let i = RTCIntersection.build 4. shape in
+      let i = RTCIntersection.build 4. shape [] in
       let comps = RTCComps.prepare i r [i] in
       let c = RTCWorld.shade_hit w comps 5 in
       assert (RTCColor.equal c (RTCColor.build 0.38066 0.47583 0.2855)));
@@ -72,7 +72,7 @@ let tests =
       let w = { dw with lights=[ RTCLight.point (RTCTuple.point 0. 0.25 0.) (RTCColor.build 1. 1. 1.) ] } in
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.) (RTCTuple.vector 0. 0. 1.) in
       let shape = List.nth w.shapes 1 in
-      let i = RTCIntersection.build 0.5 shape in
+      let i = RTCIntersection.build 0.5 shape [] in
       let comps = RTCComps.prepare i r [i] in
       let c = RTCWorld.shade_hit w comps 5 in
       assert (RTCColor.equal c (RTCColor.build 0.90498 0.90498 0.90498)));
@@ -134,7 +134,7 @@ let tests =
       let s2 = RTCSphere.build () in
       let w = RTCWorld.build ~shapes:[s1; s2] ~lights:[light] () in
       let r = RTCRay.build (RTCTuple.point 0. 0. 5.) (RTCTuple.vector 0. 0. 1.) in
-      let i = RTCIntersection.build 4. s2 in
+      let i = RTCIntersection.build 4. s2 [] in
       let comps = RTCComps.prepare i r [i] in
       let c = RTCWorld.shade_hit w comps 5 in
       assert (RTCColor.equal c (RTCColor.build 0.1 0.1 0.1)));
@@ -146,7 +146,7 @@ let tests =
       let shape = (List.nth w.shapes 1) in
       let shape' = RTCShape.texture shape { shape.material with ambient=1.0 } in
       let w' = { w with shapes=[(List.nth w.shapes 0); shape'] } in
-      let i = RTCIntersection.build 1. shape' in
+      let i = RTCIntersection.build 1. shape' [] in
       let comps = RTCComps.prepare i r [i] in
       let color = RTCWorld.reflected_color w' comps 5 in
       assert (RTCColor.equal RTCColor.black color));
@@ -158,7 +158,7 @@ let tests =
       let shape = RTCShape.transform shape' (RTCTransform.translation 0. (-1.) 0.) in
       let w = { w' with shapes=shape :: w'.shapes } in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-3.)) (RTCTuple.vector 0. (-.r2d2) r2d2) in
-      let i = RTCIntersection.build r2 shape in
+      let i = RTCIntersection.build r2 shape [] in
       let comps = RTCComps.prepare i r [i] in
       let color = RTCWorld.reflected_color w comps 5 in
       assert (RTCColor.equal color (RTCColor.build 0.19032 0.2379 0.14274)));
@@ -170,7 +170,7 @@ let tests =
       let shape = RTCShape.transform shape' (RTCTransform.translation 0. (-1.) 0.) in
       let w = { w' with shapes=shape :: w'.shapes } in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-3.)) (RTCTuple.vector 0. (-.r2d2) r2d2) in
-      let i = RTCIntersection.build r2 shape in
+      let i = RTCIntersection.build r2 shape [] in
       let comps = RTCComps.prepare i r [i] in
       let color = RTCWorld.shade_hit w comps 5 in
       assert (RTCColor.equal color (RTCColor.build 0.87677 0.92436 0.82918)));
@@ -194,7 +194,7 @@ let tests =
       let shape = RTCShape.transform shape' (RTCTransform.translation 0. (-1.) 0.) in
       let w = { w' with shapes=shape :: w'.shapes } in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-3.)) (RTCTuple.vector 0. (-.r2d2) r2d2) in
-      let i = RTCIntersection.build r2 shape in
+      let i = RTCIntersection.build r2 shape [] in
       let comps = RTCComps.prepare i r [i] in
       let color = RTCWorld.reflected_color w comps 0 in
       assert (RTCColor.equal color RTCColor.black));
@@ -206,8 +206,8 @@ let tests =
       let shape = (List.nth default.shapes 0) in
       let w = { default with shapes=shape :: (List.tl default.shapes) } in
       let xs =
-        let x1 = RTCIntersection.build 4. shape in
-        let x2 = RTCIntersection.build 6. shape in
+        let x1 = RTCIntersection.build 4. shape [] in
+        let x2 = RTCIntersection.build 6. shape [] in
         [ x1; x2 ]
       in
       let comps = RTCComps.prepare (List.hd xs) r xs in
@@ -223,8 +223,8 @@ let tests =
         { default with shapes=shape :: (List.tl default.shapes) }
       in
       let xs =
-        let x1 = RTCIntersection.build 4. shape in
-        let x2 = RTCIntersection.build 6. shape in
+        let x1 = RTCIntersection.build 4. shape [] in
+        let x2 = RTCIntersection.build 6. shape [] in
         [ x1; x2 ]
       in
       let comps = RTCComps.prepare (List.hd xs) r xs in
@@ -240,15 +240,15 @@ let tests =
         { default with shapes=shape :: (List.tl default.shapes) }
       in
       let xs =
-        let x1 = RTCIntersection.build (-.r2d2) shape in
-        let x2 = RTCIntersection.build r2d2 shape in
+        let x1 = RTCIntersection.build (-.r2d2) shape [] in
+        let x2 = RTCIntersection.build r2d2 shape [] in
         [ x1; x2 ]
       in
       let comps = RTCComps.prepare (List.nth xs 1) r xs in
       let color = RTCWorld.refracted_color w comps 5 in
       assert (RTCColor.equal RTCColor.black color));
 
-    "The refracted color under total internal reflection" >::
+    "The refracted color with a refracted ray" >::
     (fun test_ctx ->
       let default = default_world () in
       let a =
@@ -264,10 +264,10 @@ let tests =
       let w = { default with shapes=[a; b] } in
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.1) (RTCTuple.vector 0. 1. 0.) in
       let xs =
-        let x1 = RTCIntersection.build (-0.9899) a in
-        let x2 = RTCIntersection.build (-0.4899) b in
-        let x3 = RTCIntersection.build 0.4899 b in
-        let x4 = RTCIntersection.build 0.9899 a in
+        let x1 = RTCIntersection.build (-0.9899) a [] in
+        let x2 = RTCIntersection.build (-0.4899) b [] in
+        let x3 = RTCIntersection.build 0.4899 b [] in
+        let x4 = RTCIntersection.build 0.9899 a [] in
         [ x1; x2; x3; x4 ]
       in
       let comps = RTCComps.prepare (List.nth xs 2) r xs in
@@ -291,7 +291,7 @@ let tests =
       in
       let w = { default with shapes=floor :: ball :: default.shapes } in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-3.)) (RTCTuple.vector 0. (-.r2d2) r2d2) in
-      let i = RTCIntersection.build r2 floor in
+      let i = RTCIntersection.build r2 floor [] in
       let comps = RTCComps.prepare i r [i] in
       let color = RTCWorld.shade_hit w comps 5 in
       assert (RTCColor.equal color (RTCColor.build 0.93642 0.68642 0.68642)));
@@ -313,7 +313,7 @@ let tests =
       in
       let w = { default with shapes=floor :: ball :: default.shapes } in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-3.)) (RTCTuple.vector 0. (-.r2d2) r2d2) in
-      let i = RTCIntersection.build r2 floor in
+      let i = RTCIntersection.build r2 floor [] in
       let comps = RTCComps.prepare i r [i] in
       let color = RTCWorld.shade_hit w comps 5 in
       assert (RTCColor.equal color (RTCColor.build 0.93391 0.69643 0.69243)));

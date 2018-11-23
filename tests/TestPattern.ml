@@ -28,7 +28,7 @@ let tests =
       let shape = RTCShape.transform (RTCSphere.build ()) (RTCTransform.scaling 2. 2. 2.) in
       let pattern = test_pattern () in
       let expect = RTCColor.build 1. 1.5 2. in
-      assert (RTCColor.equal expect (RTCPattern.at_object pattern (RTCShape.world_to_object shape) (RTCTuple.point 2. 3. 4.))));
+      assert (RTCColor.equal expect (RTCPattern.at_object pattern (RTCShape.world_to_object shape []) (RTCTuple.point 2. 3. 4.))));
 
     "A pattern with a pattern transformation" >::
     (fun test_ctxt ->
@@ -36,7 +36,7 @@ let tests =
       let pattern' = test_pattern () in
       let pattern = RTCPattern.transform pattern' (RTCTransform.scaling 2. 2. 2.) in
       let expect = RTCColor.build 1. 1.5 2. in
-      assert (RTCColor.equal expect (RTCPattern.at_object pattern (RTCShape.world_to_object shape) (RTCTuple.point 2. 3. 4.))));
+      assert (RTCColor.equal expect (RTCPattern.at_object pattern (RTCShape.world_to_object shape []) (RTCTuple.point 2. 3. 4.))));
 
     "A pattern with both an object and a pattern transformation" >::
     (fun test_ctxt ->
@@ -44,7 +44,7 @@ let tests =
       let pattern' = test_pattern () in
       let pattern = RTCPattern.transform pattern' (RTCTransform.translation 0.5 1. 1.5) in
       let expect = RTCColor.build 0.75 0.5 0.25 in
-      assert (RTCColor.equal expect (RTCPattern.at_object pattern (RTCShape.world_to_object shape) (RTCTuple.point 2.5 3. 3.5))));
+      assert (RTCColor.equal expect (RTCPattern.at_object pattern (RTCShape.world_to_object shape []) (RTCTuple.point 2.5 3. 3.5))));
 
     "A stripe pattern is constant in y" >::
     (fun test_ctxt ->

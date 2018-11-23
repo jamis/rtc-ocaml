@@ -4,7 +4,7 @@ let build () =
     let t2 = (1. -. origin) /. direction in
     if t1 > t2 then (t2, t1) else (t1, t2)
   in
-  let local_intersect shape (r:RTCRay.t) =
+  let local_intersect shape ?(trail=[]) (r:RTCRay.t) =
     let (xtmin, xtmax) = check_axis r.origin.x r.direction.x in
     let (ytmin, ytmax) = check_axis r.origin.y r.direction.y in
     let (ztmin, ztmax) = check_axis r.origin.z r.direction.z in
@@ -13,7 +13,8 @@ let build () =
     if tmin > tmax then
       []
     else
-      [ RTCIntersection.build tmin shape; RTCIntersection.build tmax shape ]
+      [ RTCIntersection.build tmin shape trail;
+        RTCIntersection.build tmax shape trail ]
   in
   let local_normal_at shape (point:RTCTuple.t) =
     let x = abs_float point.x in

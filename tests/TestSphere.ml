@@ -78,33 +78,33 @@ let tests =
     "The normal on a sphere at a point on the x axis" >::
     (fun test_ctxt ->
       let s = RTCSphere.build () in
-      let n = RTCShape.normal_at s (RTCTuple.point 1. 0. 0.) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point 1. 0. 0.) in
       assert (RTCTuple.equal n (RTCTuple.vector 1. 0. 0.)));
 
     "The normal on a sphere at a point on the y axis" >::
     (fun test_ctxt ->
       let s = RTCSphere.build () in
-      let n = RTCShape.normal_at s (RTCTuple.point 0. 1. 0.) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point 0. 1. 0.) in
       assert (RTCTuple.equal n (RTCTuple.vector 0. 1. 0.)));
 
     "The normal on a sphere at a point on the z axis" >::
     (fun test_ctxt ->
       let s = RTCSphere.build () in
-      let n = RTCShape.normal_at s (RTCTuple.point 0. 0. 1.) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point 0. 0. 1.) in
       assert (RTCTuple.equal n (RTCTuple.vector 0. 0. 1.)));
 
     "The normal on a sphere at a non-axial point" >::
     (fun test_ctxt ->
       let s = RTCSphere.build () in
       let r3 = sqrt(3.) /. 3. in
-      let n = RTCShape.normal_at s (RTCTuple.point r3 r3 r3) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point r3 r3 r3) in
       assert (RTCTuple.equal n (RTCTuple.vector r3 r3 r3)));
 
     "The normal is a normalized vector" >::
     (fun test_ctxt ->
       let s = RTCSphere.build () in
       let r3 = sqrt(3.) /. 3. in
-      let n = RTCShape.normal_at s (RTCTuple.point r3 r3 r3) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point r3 r3 r3) in
       assert (RTCTuple.equal n (RTCTuple.norm n)));
 
     "A helper for producing a sphere with a glassy material" >::

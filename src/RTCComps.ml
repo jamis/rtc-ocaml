@@ -1,5 +1,6 @@
 type t = { t : float;
            shape : RTCShape.t;
+           trail : RTCShape.t list;
            point : RTCTuple.t;
            under_point : RTCTuple.t;
            eyev : RTCTuple.t;
@@ -12,7 +13,7 @@ type t = { t : float;
 let prepare (i:RTCShape.t RTCIntersection.t) r (xs:RTCShape.t RTCIntersection.xslist) =
   let point = RTCRay.position r i.t in
   let eyev = RTCTuple.neg r.direction in
-  let normalv = RTCShape.normal_at i.shape point in
+  let normalv = RTCShape.normal_at i.shape i.trail point in
   let inside = (RTCTuple.dot normalv eyev) < 0. in
   let normalv' = if inside then RTCTuple.neg normalv else normalv in
   let reflectv = RTCTuple.reflect r.direction normalv' in
@@ -43,7 +44,7 @@ let prepare (i:RTCShape.t RTCIntersection.t) r (xs:RTCShape.t RTCIntersection.xs
         else n1n2 containers' n1' n2 xlist
   in
   let (n1, n2) = n1n2 [] 1. 1. xs in
-  { t=i.t; shape=i.shape;
+  { t=i.t; shape=i.shape; trail=i.trail;
     point=point'; under_point;
     eyev; normalv=normalv'; reflectv;
     inside; n1; n2 }

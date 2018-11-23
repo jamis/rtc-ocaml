@@ -1,7 +1,7 @@
-type 'a t = { t : float; shape : 'a }
+type 'a t = { t : float; shape : 'a; trail : 'a list }
 type 'a xslist = 'a t list
 
-let build t shape = { t; shape }
+let build t shape trail = { t; shape; trail }
 let list (xs : 'a xslist) = List.sort compare xs
 
 let hit ?(allow=fun x -> true) (xs : 'a xslist) =

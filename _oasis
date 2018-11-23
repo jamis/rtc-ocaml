@@ -16,7 +16,7 @@ Library rtc
   Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix, RTCTransform,
            RTCRay, RTCShape, RTCSphere, RTCIntersection, RTCLight, RTCMaterial,
            RTCWorld, RTCComps, RTCCamera, RTCPlane, RTCPattern, RTCComposition,
-           RTCCube, RTCCylinder
+           RTCCube, RTCConic, RTCCylinder, RTCCone, RTCGroup
 
 Executable test
   Install: false

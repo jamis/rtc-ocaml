@@ -1,7 +1,8 @@
 open OUnit2
+open TestAssertions
 
 let test_shape () =
-  let intersect (shape:RTCShape.t) r : RTCShape.t RTCIntersection.xslist =
+  let intersect (shape:RTCShape.t) ?(trail=[]) r : RTCShape.t RTCIntersection.xslist =
     match shape.shape with
     | RTCShape.TestShape data -> data.ray <- Some r; []
     | _ -> failwith "shouldn't ever get here"
@@ -64,13 +65,40 @@ let tests =
     "Computing the normal on a translated shape" >::
     (fun test_ctxt ->
       let s = RTCShape.transform (test_shape ()) (RTCTransform.translation 0. 1. 0.) in
-      let n = RTCShape.normal_at s (RTCTuple.point 0. 1.70711 (-0.70711)) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point 0. 1.70711 (-0.70711)) in
       assert (RTCTuple.equal n (RTCTuple.vector 0. 0.70711 (-0.70711))));
 
     "Computing the normal on a transformed shape" >::
     (fun test_ctxt ->
       let tx = RTCMatrix.mult (RTCTransform.scaling 1. 0.5 1.) (RTCTransform.rotation_z (Float.pi /. 5.)) in
       let s = RTCShape.transform (test_shape ()) tx in
-      let n = RTCShape.normal_at s (RTCTuple.point 0. (sqrt(2.)/.2.) (-.sqrt(2.)/.2.)) in
+      let n = RTCShape.normal_at s [] (RTCTuple.point 0. (sqrt(2.)/.2.) (-.sqrt(2.)/.2.)) in
       assert (RTCTuple.equal n (RTCTuple.vector 0. 0.97014 (-0.24254))));
+
+    "Converting a point from world to object space" >::
+    (fun test_ctxt ->
+      let s = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation 5. 0. 0.) in
+      let g2 = RTCShape.transform (RTCGroup.build ~children:[s] ()) (RTCTransform.scaling 2. 2. 2.) in
+      let g1 = RTCShape.transform (RTCGroup.build ~children:[g2] ()) (RTCTransform.rotation_y (Float.pi /. 2.)) in
+      let p = RTCShape.world_to_object s [g2; g1] (RTCTuple.point (-2.) 0. (-10.)) in
+      assert_tuple_equal p (RTCTuple.point 0. 0. (-1.)));
+
+    "Converting a normal from object to world space" >::
+    (fun test_ctxt ->
+      let s = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation 5. 0. 0.) in
+      let g2 = RTCShape.transform (RTCGroup.build ~children:[s] ()) (RTCTransform.scaling 1. 2. 3.) in
+      let g1 = RTCShape.transform (RTCGroup.build ~children:[g2] ()) (RTCTransform.rotation_y (Float.pi /. 2.)) in
+      let r3d3 = sqrt(3.) /. 3. in
+      let shape_p = RTCTuple.point r3d3 r3d3 r3d3 in
+      let n = RTCShape.normal_to_world s [g2; g1] shape_p in
+      assert_tuple_equal n (RTCTuple.vector 0.2857 0.4286 (-0.8571)));
+
+    "Finding the normal on a child object" >::
+    (fun test_ctxt ->
+      let s = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation 5. 0. 0.) in
+      let g2 = RTCShape.transform (RTCGroup.build ~children:[s] ()) (RTCTransform.scaling 1. 2. 3.) in
+      let g1 = RTCShape.transform (RTCGroup.build ~children:[g2] ()) (RTCTransform.rotation_y (Float.pi /. 2.)) in
+      let world_p = RTCTuple.point 1.7321 1.1547 (-5.5774) in
+      let n = RTCShape.normal_at s [g2; g1] world_p in
+      assert_tuple_equal n (RTCTuple.vector 0.2857 0.4286 (-0.8571)));
   ]

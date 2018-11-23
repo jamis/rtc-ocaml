@@ -8,7 +8,7 @@ let draw_sphere sphere ray_z wall_z canvas_size =
     | None -> ()
     | Some (hit : RTCShape.t RTCIntersection.t) ->
       let point = RTCRay.position r hit.t in
-      let normal = RTCShape.normal_at hit.shape point in
+      let normal = RTCShape.normal_at hit.shape [] point in
       let eye = RTCTuple.neg r.direction in
       let identity x = x in
       let color = RTCMaterial.lighting hit.shape.material identity light point eye normal false in

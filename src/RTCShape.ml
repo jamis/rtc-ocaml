@@ -6,9 +6,10 @@ type shape_t =
   | Cube
   | Cylinder of float * float * bool (* minimum, maximum, closed *)
   | Cone of float * float * bool     (* minimum, maximum, closed *)
+  | Group of t list (* child elements *)
   | TestShape of test_shape_data
 
-type intersect_t = t -> RTCRay.t -> t RTCIntersection.xslist
+and intersect_t = t -> ?trail:t list -> RTCRay.t -> t RTCIntersection.xslist
 and normal_t = t -> RTCTuple.t -> RTCTuple.t
 and t = { shape : shape_t;
           transform : RTCMatrix.t;
@@ -36,15 +37,29 @@ let transform (shape : t) transform =
 
 let texture (shape : t) material = { shape with material }
 
-let intersect (shape : t) (ray : RTCRay.t) =
+let intersect (shape : t) ?(trail=[]) (ray : RTCRay.t) =
   let ray2 = RTCRay.transform ray shape.inverse_transform in
-  shape.local_intersect shape ray2
+  shape.local_intersect shape ~trail:trail ray2
 
-let normal_at (shape : t) (wpoint : RTCTuple.t) =
-  let opoint = RTCMatrix.tmult shape.inverse_transform wpoint in
+let world_to_object (shape : t) (trail : t list) (wpoint : RTCTuple.t) =
+  let rec loop point = function
+    | [] -> point
+    | parent :: parents ->
+      RTCMatrix.tmult parent.inverse_transform (loop point parents)
+  in
+  loop wpoint (shape :: trail)
+
+let normal_to_world (shape : t) (trail : t list) (normal : RTCTuple.t) =
+  let rec loop normal = function
+    | [] -> normal
+    | shape :: shapes ->
+      let n = RTCMatrix.tmult shape.inverse_transpose_transform normal in
+      let n' = RTCTuple.norm (RTCTuple.vector n.x n.y n.z) in
+      loop n' shapes
+  in
+  loop normal (shape :: trail)
+
+let normal_at (shape : t) (trail : t list) (wpoint : RTCTuple.t) =
+  let opoint = world_to_object shape trail wpoint in
   let onormal = shape.local_normal_at shape opoint in
-  let wnormal = RTCMatrix.tmult shape.inverse_transpose_transform onormal in
-  RTCTuple.norm (RTCTuple.vector wnormal.x wnormal.y wnormal.z)
-
-let world_to_object (shape : t) (wpoint : RTCTuple.t) =
-  RTCMatrix.tmult shape.inverse_transform wpoint
+  normal_to_world shape trail onormal
