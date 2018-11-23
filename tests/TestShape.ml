@@ -28,15 +28,20 @@ let tests =
     "The default material" >::
     (fun test_ctxt ->
       let s = test_shape () in
-      let m = s.material in
-      assert (RTCMaterial.equal m (RTCMaterial.build ())));
+      assert_equal None s.material);
+
+    "The querying the material" >::
+    (fun test_ctxt ->
+      let s = test_shape () in
+      let m = RTCShape.material s in
+      assert_equal ~cmp:RTCMaterial.equal m (RTCMaterial.build ()));
 
     "Assigning a material" >::
     (fun test_ctxt ->
       let s = test_shape () in
       let m = RTCMaterial.build ~ambient:1.0 () in
       let s' = RTCShape.texture s m in
-      assert (RTCMaterial.equal m s'.material));
+      assert_equal ~cmp:RTCMaterial.equal m (RTCShape.material s'));
 
     "Intersecting a scaled shape with a ray" >::
     (fun test_ctxt ->

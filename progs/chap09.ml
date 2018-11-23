@@ -2,23 +2,20 @@ let half_pi = Float.pi /. 2.
 let qtr_pi = Float.pi /. 4.
 
 let scene () =
-  let floor = RTCShape.texture (RTCPlane.build ())
-                               (RTCMaterial.build ~color:(RTCColor.build 1. 0.9 0.9)
-                                        ~specular:0.
-                                        ())
-  in
+  let floor_material = RTCMaterial.build ~color:(RTCColor.build 1. 0.9 0.9) ~specular:0. () in
+  let floor = RTCShape.texture (RTCPlane.build ()) floor_material in
 
   let tx = RTCTransform.translation 0. 0. 5. in
   let ry = RTCTransform.rotation_y (-.qtr_pi) in
   let rx = RTCTransform.rotation_x half_pi in
   let left_wall' = RTCShape.transform (RTCPlane.build ()) (List.fold_left RTCMatrix.mult tx [ry; rx]) in
-  let left_wall = RTCShape.texture left_wall' floor.material in
+  let left_wall = RTCShape.texture left_wall' floor_material in
 
   let tx = RTCTransform.translation 0. 0. 5. in
   let ry = RTCTransform.rotation_y qtr_pi in
   let rx = RTCTransform.rotation_x half_pi in
   let right_wall' = RTCShape.transform (RTCPlane.build ()) (List.fold_left RTCMatrix.mult tx [ry; rx]) in
-  let right_wall = RTCShape.texture right_wall' floor.material in
+  let right_wall = RTCShape.texture right_wall' floor_material in
 
   let middle' = RTCShape.transform (RTCSphere.build ()) (RTCTransform.translation (-0.5) 1. 0.5) in
   let middle = RTCShape.texture middle' (RTCMaterial.build ~color:(RTCColor.build 0.1 1. 0.5)

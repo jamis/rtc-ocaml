@@ -15,7 +15,7 @@ and t = { shape : shape_t;
           transform : RTCMatrix.t;
           inverse_transform : RTCMatrix.t;
           inverse_transpose_transform : RTCMatrix.t;
-          material : RTCMaterial.t;
+          material : RTCMaterial.t option;
           local_intersect : intersect_t;
           local_normal_at : normal_t;
           shadow : bool }
@@ -25,7 +25,7 @@ let build (shape : shape_t) (isect : intersect_t) (normal : normal_t)=
     transform=RTCMatrix.identity;
     inverse_transform=RTCMatrix.identity;
     inverse_transpose_transform=RTCMatrix.identity;
-    material=RTCMaterial.build ();
+    material=None;
     local_intersect=isect;
     local_normal_at=normal;
     shadow=true }
@@ -35,7 +35,20 @@ let transform (shape : t) transform =
   let inverse_transpose_transform = RTCMatrix.transpose inverse_transform in
   { shape with transform; inverse_transform; inverse_transpose_transform }
 
-let texture (shape : t) material = { shape with material }
+let texture (shape : t) material = { shape with material=Some material }
+
+(* implements "inherited" materials, by checking the shape first, and
+   then each element of the trail for a valid material *)
+let material ?(trail=[]) (shape : t) =
+  let rec loop head tail =
+    match head.material with
+    | None ->
+      ( match tail with
+        | [] -> RTCMaterial.build ()
+        | head' :: tail' -> loop head' tail' )
+    | Some m -> m
+  in
+  loop shape trail
 
 let intersect (shape : t) ?(trail=[]) (ray : RTCRay.t) =
   let ray2 = RTCRay.transform ray shape.inverse_transform in

@@ -118,19 +118,19 @@ let tests =
       let a =
         let sphere = TestSphere.glass_sphere () in
         let transform = RTCTransform.scaling 2. 2. 2. in
-        let material = { sphere.material with refractive_index=1.5 } in
+        let material = { (RTCShape.material sphere) with refractive_index=1.5 } in
         RTCShape.transform (RTCShape.texture sphere material) transform
       in
       let b =
         let sphere = TestSphere.glass_sphere () in
         let transform = RTCTransform.translation 0. 0. (-0.25) in
-        let material = { sphere.material with refractive_index=2. } in
+        let material = { (RTCShape.material sphere) with refractive_index=2. } in
         RTCShape.transform (RTCShape.texture sphere material) transform
       in
       let c =
         let sphere = TestSphere.glass_sphere () in
         let transform = RTCTransform.translation 0. 0. 0.25 in
-        let material = { sphere.material with refractive_index=2.5 } in
+        let material = { (RTCShape.material sphere) with refractive_index=2.5 } in
         RTCShape.transform (RTCShape.texture sphere material) transform
       in
       let r = RTCRay.build (RTCTuple.point 0. 0. (-4.)) (RTCTuple.vector 0. 0. 1.) in

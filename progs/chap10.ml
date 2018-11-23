@@ -11,23 +11,20 @@ let scene () =
   let pattern' = RTCPattern.checkers (RTCPattern.Pattern subpat) (solid 0.9 0.9 1.0) in
   let pattern = Some (RTCPattern.transform pattern' (RTCTransform.scaling 0.5 0.5 0.5)) in
 
-  let floor = RTCShape.texture (RTCPlane.build ())
-                               (RTCMaterial.build ~pattern:pattern
-                                        ~specular:0.
-                                        ())
-  in
+  let floor_material = RTCMaterial.build ~pattern:pattern ~specular:0. () in
+  let floor = RTCShape.texture (RTCPlane.build ()) floor_material in
 
   let tx = RTCTransform.translation 0. 0. 5. in
   let ry = RTCTransform.rotation_y (-.qtr_pi) in
   let rx = RTCTransform.rotation_x half_pi in
   let left_wall' = RTCShape.transform (RTCPlane.build ()) (List.fold_left RTCMatrix.mult tx [ry; rx]) in
-  let left_wall = RTCShape.texture left_wall' floor.material in
+  let left_wall = RTCShape.texture left_wall' floor_material in
 
   let tx = RTCTransform.translation 0. 0. 5. in
   let ry = RTCTransform.rotation_y qtr_pi in
   let rx = RTCTransform.rotation_x half_pi in
   let right_wall' = RTCShape.transform (RTCPlane.build ()) (List.fold_left RTCMatrix.mult tx [ry; rx]) in
-  let right_wall = RTCShape.texture right_wall' floor.material in
+  let right_wall = RTCShape.texture right_wall' floor_material in
 
   let tx = compose [Scale (0.2, 0.2, 0.2); RotateX (-.Float.pi /. 3.)] in
   let ring = RTCPattern.transform (RTCPattern.ring (solid 0. 0.3 0.6) (solid 0.1 1. 0.8)) tx in

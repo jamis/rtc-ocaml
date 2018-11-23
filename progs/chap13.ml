@@ -139,12 +139,12 @@ let scene ?(pure=true) () =
     let cone2 =
       let cone = RTCCone.build ~minimum:(-1.) ~maximum:(-0.5) () in
       let transform = compose [ Scale (0.2, 0.5, 0.2); Translate (1., 1., 0.) ] in
-      RTCShape.transform (RTCShape.texture cone c5.material) transform
+      RTCShape.transform (RTCShape.texture cone (RTCShape.material c5)) transform
     in
     let cone3 =
       let cone = RTCCone.build ~minimum:(-1.) ~maximum:0. () in
       let transform = compose [ Scale (0.1, 0.5, 0.1); Translate (1., 1.25, 0.) ] in
-      RTCShape.transform (RTCShape.texture cone c5.material) transform
+      RTCShape.transform (RTCShape.texture cone (RTCShape.material c5)) transform
     in
     cone1 :: cone2 :: cone3 :: shapes
   else shapes

@@ -34,13 +34,13 @@ let prepare (i:RTCShape.t RTCIntersection.t) r (xs:RTCShape.t RTCIntersection.xs
     | (x:RTCShape.t RTCIntersection.t) :: xlist ->
       let n1' = if x == i then match containers with
         | [] -> 1.
-        | s :: _ -> s.material.refractive_index
+        | s :: _ -> (RTCShape.material s).refractive_index
         else n1
       in
       let containers' = append_or_remove x.shape containers in
       if x == i then match containers' with
         | [] -> (n1', 1.)
-        | s :: _ -> (n1', s.material.refractive_index)
+        | s :: _ -> (n1', (RTCShape.material s).refractive_index)
         else n1n2 containers' n1' n2 xlist
   in
   let (n1, n2) = n1n2 [] 1. 1. xs in
@@ -66,3 +66,5 @@ let schlick (comps:t) =
       reflectance cos_t
   else
     reflectance cos_i
+
+let material (comps:t) = RTCShape.material ~trail:comps.trail comps.shape

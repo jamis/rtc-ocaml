@@ -26,18 +26,18 @@ let is_shadowed (w:t) (light:RTCLight.point_light) (point:RTCTuple.t) =
   | _ -> false
 
 let rec shade_hit (w:t) (c:RTCComps.t) remaining =
+  let material = RTCComps.material c in
   let rec collect acc = function
     | [] -> acc
     | light :: lights ->
       let shadowed = is_shadowed w light c.point in
       let transform = RTCShape.world_to_object c.shape c.trail in
-      let result = RTCMaterial.lighting c.shape.material transform light c.point c.eyev c.normalv shadowed in
+      let result = RTCMaterial.lighting material transform light c.point c.eyev c.normalv shadowed in
       collect (RTCColor.add acc result) lights
   in
   let surface = collect (RTCColor.black) w.lights in
   let reflected = reflected_color w c remaining in
   let transmitted = refracted_color w c remaining in
-  let material = c.shape.material in
   if material.reflective > 0. && material.transparency > 0. then
     let reflectance = RTCComps.schlick c in
     let reflected' = RTCColor.mults reflected reflectance in
@@ -55,15 +55,17 @@ and color_at (w:t) (r:RTCRay.t) remaining =
     shade_hit w comps remaining
 
 and reflected_color (w:t) (c:RTCComps.t) remaining =
-  if (abs_float c.shape.material.reflective) < RTCConst.epsilon || remaining < 1 then
+  let material = RTCComps.material c in
+  if (abs_float material.reflective) < RTCConst.epsilon || remaining < 1 then
     RTCColor.black
   else
     let reflect_ray = RTCRay.build c.point c.reflectv in
     let color = color_at w reflect_ray (remaining - 1) in
-    RTCColor.mults color c.shape.material.reflective
+    RTCColor.mults color material.reflective
 
 and refracted_color (w:t) (c:RTCComps.t) remaining =
-  if (abs_float c.shape.material.transparency) < RTCConst.epsilon || remaining < 1 then
+  let material = RTCComps.material c in
+  if (abs_float material.transparency) < RTCConst.epsilon || remaining < 1 then
     RTCColor.black
   else
     let n_ratio = c.n1 /. c.n2 in
@@ -80,4 +82,4 @@ and refracted_color (w:t) (c:RTCComps.t) remaining =
       in
       let refract_ray = RTCRay.build c.under_point direction in
       let color = color_at w refract_ray (remaining - 1) in
-      RTCColor.mults color c.shape.material.transparency
+      RTCColor.mults color material.transparency

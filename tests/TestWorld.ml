@@ -40,8 +40,8 @@ let tests =
       let s2 = List.nth w.shapes 1 in
       let l1 = List.nth w.lights 0 in
       assert_equal l1 light;
-      assert_equal m1 s1.material;
-      assert_equal m2 s2.material;
+      assert_equal m1 (RTCShape.material s1);
+      assert_equal m2 (RTCShape.material s2);
       assert_equal RTCMatrix.identity s1.transform;
       assert_equal t2 s2.transform);
 
@@ -95,13 +95,13 @@ let tests =
     (fun test_ctx ->
       let w = default_world () in
       let outer = (List.nth w.shapes 0) in
-      let outer' = RTCShape.texture outer { outer.material with ambient=1.0 } in
+      let outer' = RTCShape.texture outer { (RTCShape.material outer) with ambient=1.0 } in
       let inner = (List.nth w.shapes 1) in
-      let inner' = RTCShape.texture inner { inner.material with ambient=1.0 } in
+      let inner' = RTCShape.texture inner { (RTCShape.material inner) with ambient=1.0 } in
       let w' = { w with shapes=[outer'; inner'] } in
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.75) (RTCTuple.vector 0. 0. (-1.)) in
       let c = RTCWorld.color_at w' r 5 in
-      assert (RTCColor.equal c inner'.material.color));
+      assert (RTCColor.equal c (RTCShape.material inner').color));
 
     "There is no shadow when nothing is collinear with point and light" >::
     (fun test_ctx ->
@@ -144,7 +144,7 @@ let tests =
       let w = default_world () in
       let r = RTCRay.build (RTCTuple.point 0. 0. 0.) (RTCTuple.vector 0. 0. 1.) in
       let shape = (List.nth w.shapes 1) in
-      let shape' = RTCShape.texture shape { shape.material with ambient=1.0 } in
+      let shape' = RTCShape.texture shape { (RTCShape.material shape) with ambient=1.0 } in
       let w' = { w with shapes=[(List.nth w.shapes 0); shape'] } in
       let i = RTCIntersection.build 1. shape' [] in
       let comps = RTCComps.prepare i r [i] in
@@ -253,12 +253,12 @@ let tests =
       let default = default_world () in
       let a =
         let first = List.nth default.shapes 0 in
-        let material = { first.material with ambient=1.0; pattern=Some (TestPattern.test_pattern ()) } in
+        let material = { (RTCShape.material first) with ambient=1.0; pattern=Some (TestPattern.test_pattern ()) } in
         RTCShape.texture first material
       in
       let b =
         let second = List.nth default.shapes 1 in
-        let material = { second.material with transparency=1.; refractive_index=1.5 } in
+        let material = { (RTCShape.material second) with transparency=1.; refractive_index=1.5 } in
         RTCShape.texture second material
       in
       let w = { default with shapes=[a; b] } in

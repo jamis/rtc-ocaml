@@ -110,7 +110,8 @@ let tests =
     "A helper for producing a sphere with a glassy material" >::
     (fun test_ctxt ->
       let s = glass_sphere () in
+      let material = RTCShape.material s in
       assert (RTCMatrix.equal RTCMatrix.identity s.transform);
-      assert_equal 1.0 s.material.transparency;
-      assert_equal 1.5 s.material.refractive_index);
+      assert_equal 1.0 material.transparency;
+      assert_equal 1.5 material.refractive_index);
   ]
