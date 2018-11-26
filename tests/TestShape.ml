@@ -7,7 +7,7 @@ let test_shape () =
     | RTCShape.TestShape data -> data.ray <- Some r; []
     | _ -> failwith "shouldn't ever get here"
   in
-  let normal_at (shape:RTCShape.t) (point:RTCTuple.t) = RTCTuple.vector point.x point.y point.z in
+  let normal_at ?(hit=None) (shape:RTCShape.t) (point:RTCTuple.t) = RTCTuple.vector point.x point.y point.z in
   RTCShape.build (TestShape {ray=None}) intersect normal_at
 
 let tests =

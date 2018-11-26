@@ -1,6 +1,7 @@
 open OUnit2
 
 let build = RTCIntersection.build
+let point = RTCTuple.point
 
 let assert_option_intersection_equal expect actual =
   match (expect, actual) with
@@ -204,4 +205,11 @@ let tests =
       let comps = RTCComps.prepare (List.nth xs 0) r xs in
       let reflectance = RTCComps.schlick comps in
       assert ((abs_float (reflectance -. 0.48873)) < RTCConst.epsilon));
+
+    "An intersection can encapsulate `u` and `v`" >::
+    (fun test_ctxt ->
+      let shape = RTCTriangle.build (point 0. 1. 0.) (point (-1.) 0. 0.) (point 1. 0. 0.) in
+      let i = build ~u:0.2 ~v:0.4 3.5 shape [] in
+      assert_equal 0.2 i.u;
+      assert_equal 0.4 i.v);
   ]

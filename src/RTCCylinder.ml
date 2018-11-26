@@ -7,7 +7,7 @@ let build ?(minimum=Float.neg_infinity) ?(maximum=Float.infinity) ?(closed=false
     let cfn (r:RTCRay.t) = r.origin.x ** 2. +. r.origin.z ** 2. -. 1. in
     RTCConic.intersect shape ~trail:trail r afn bfn cfn (fun _ -> 1.)
   in
-  let local_normal_at shape (point:RTCTuple.t) =
+  let local_normal_at ?(hit=None) shape (point:RTCTuple.t) =
     let nfn (point:RTCTuple.t) = RTCTuple.vector point.x 0. point.z in
     RTCConic.normal_at shape point nfn
   in

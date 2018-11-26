@@ -1,4 +1,8 @@
 type test_shape_data = { mutable ray : RTCRay.t option }
+type tri_data = { p1: RTCTuple.t; p2: RTCTuple.t; p3: RTCTuple.t;
+                  n1: RTCTuple.t; n2: RTCTuple.t; n3: RTCTuple.t;
+                  smooth: bool;
+                  e1: RTCTuple.t; e2: RTCTuple.t; normal: RTCTuple.t }
 
 type shape_t =
   | Sphere
@@ -7,10 +11,11 @@ type shape_t =
   | Cylinder of float * float * bool (* minimum, maximum, closed *)
   | Cone of float * float * bool     (* minimum, maximum, closed *)
   | Group of t list (* child elements *)
+  | Triangle of tri_data
   | TestShape of test_shape_data
 
 and intersect_t = t -> ?trail:t list -> RTCRay.t -> t RTCIntersection.xslist
-and normal_t = t -> RTCTuple.t -> RTCTuple.t
+and normal_t = ?hit:(t RTCIntersection.t option) -> t -> RTCTuple.t -> RTCTuple.t
 and t = { shape : shape_t;
           transform : RTCMatrix.t;
           inverse_transform : RTCMatrix.t;
@@ -72,7 +77,7 @@ let normal_to_world (shape : t) (trail : t list) (normal : RTCTuple.t) =
   in
   loop normal (shape :: trail)
 
-let normal_at (shape : t) (trail : t list) (wpoint : RTCTuple.t) =
+let normal_at ?(hit=None) (shape : t) (trail : t list) (wpoint : RTCTuple.t) =
   let opoint = world_to_object shape trail wpoint in
-  let onormal = shape.local_normal_at shape opoint in
+  let onormal = shape.local_normal_at ~hit:hit shape opoint in
   normal_to_world shape trail onormal

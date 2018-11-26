@@ -12,5 +12,5 @@ let build () =
          let i2 = RTCIntersection.build t2 shape trail in
          RTCIntersection.list [i1; i2]
   in
-  let local_normal_at shape (point:RTCTuple.t) = RTCTuple.vector point.x point.y point.z in
+  let local_normal_at ?(hit=None) shape (point:RTCTuple.t) = RTCTuple.vector point.x point.y point.z in
   RTCShape.build Sphere local_intersect local_normal_at

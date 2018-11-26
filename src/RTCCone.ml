@@ -9,7 +9,7 @@ let build ?(minimum=Float.neg_infinity) ?(maximum=Float.infinity) ?(closed=false
     let cfn (r:RTCRay.t) = r.origin.x ** 2. -. r.origin.y ** 2. +. r.origin.z ** 2. in
     RTCConic.intersect shape ~trail:trail r afn bfn cfn (fun y -> abs_float y)
   in
-  let local_normal_at shape (point:RTCTuple.t) =
+  let local_normal_at ?(hit=None) shape (point:RTCTuple.t) =
     let nfn (point:RTCTuple.t) =
       let y = sqrt (point.x ** 2. +. point.z ** 2.) in
       let y' = if point.y > 0. then -.y else y in

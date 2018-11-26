@@ -5,4 +5,4 @@ let assert_in_epsilon a b =
   assert (diff < RTCConst.epsilon)
 
 let assert_tuple_equal a b =
-  assert (RTCTuple.equal a b)
+  assert_equal ~cmp:RTCTuple.equal a b

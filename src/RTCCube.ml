@@ -16,7 +16,7 @@ let build () =
       [ RTCIntersection.build tmin shape trail;
         RTCIntersection.build tmax shape trail ]
   in
-  let local_normal_at shape (point:RTCTuple.t) =
+  let local_normal_at ?(hit=None) shape (point:RTCTuple.t) =
     let x = abs_float point.x in
     let y = abs_float point.y in
     let z = abs_float point.z in

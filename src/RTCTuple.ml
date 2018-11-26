@@ -5,6 +5,8 @@ let build x y z w = { x; y; z; w; }
 let point x y z = build x y z 1.0
 let vector x y z = build x y z 0.0
 
+let origin = point 0. 0. 0.
+
 let is_vector a = a.w = 0.0
 let is_point a = a.w = 1.0
 

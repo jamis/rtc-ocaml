@@ -13,7 +13,7 @@ let build ?(children=[]) () =
     in
     RTCIntersection.list (loop [] (get_children shape))
   in
-  let local_normal_at shape (point:RTCTuple.t) = failwith "groups have no normal" in
+  let local_normal_at ?(hit=None) shape (point:RTCTuple.t) = failwith "groups have no normal" in
   RTCShape.build (Group children) local_intersect local_normal_at
 
 let is_empty (g:RTCShape.t) = (List.length (get_children g)) = 0

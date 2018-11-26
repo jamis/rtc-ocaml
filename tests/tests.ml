@@ -17,6 +17,7 @@ let () =
        TestPattern.tests;
        TestWorld.tests;
        TestCamera.tests;
+       TestObjFile.tests;
        TestShape.tests;
        TestSphere.tests;
        TestPlane.tests;
@@ -24,4 +25,5 @@ let () =
        TestCylinder.tests;
        TestCone.tests;
        TestGroup.tests;
+       TestTriangle.tests;
      ])
