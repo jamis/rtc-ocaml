@@ -13,7 +13,8 @@ let () =
     ( "12", Chap12.run );
     ( "13", Chap13.run ~pure:false );
     ( "14", Chap14.run);
-    ( "15", Chap15.run) ]
+    ( "15", Chap15.run);
+    ( "16", Chap16.run) ]
   in
   if (Array.length Sys.argv) < 2 then
     Printf.printf "Please specify which chapter demo you would like to run.\n"

@@ -3,6 +3,7 @@ type tri_data = { p1: RTCTuple.t; p2: RTCTuple.t; p3: RTCTuple.t;
                   n1: RTCTuple.t; n2: RTCTuple.t; n3: RTCTuple.t;
                   smooth: bool;
                   e1: RTCTuple.t; e2: RTCTuple.t; normal: RTCTuple.t }
+type csg_rule_fn = bool -> bool -> bool -> bool
 
 type shape_t =
   | Sphere
@@ -12,6 +13,9 @@ type shape_t =
   | Cone of float * float * bool     (* minimum, maximum, closed *)
   | Group of t list (* child elements *)
   | Triangle of tri_data
+  | Union of t * t * csg_rule_fn (* left, right, rule *)
+  | Intersect of t * t * csg_rule_fn (* left, right, rule *)
+  | Difference of t * t * csg_rule_fn (* left, right, rule *)
   | TestShape of test_shape_data
 
 and intersect_t = t -> ?trail:t list -> RTCRay.t -> t RTCIntersection.xslist

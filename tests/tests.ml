@@ -26,4 +26,5 @@ let () =
        TestCone.tests;
        TestGroup.tests;
        TestTriangle.tests;
+       TestCSG.tests;
      ])

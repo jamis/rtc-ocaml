@@ -130,10 +130,13 @@ let file_scene filename transform material =
   (world, camera)
 
 let run () =
-  (* let (world, camera) = geometrical_scene () in *)
+  let (world, camera) = geometrical_scene () in
+
+  (*
   let transform = compose [ Translate (0., 0., -6.); UScale 0.1; RotateX (-.Float.pi /. 2.) ] in
   let material = RTCMaterial.build ~color:(color 1. 0.3 0.5) ~diffuse:0.8 ~ambient:0.1 ~specular:0.4 ~shininess:40. () in
   let (world, camera) = file_scene "models/teapot-large.obj" transform material in
+  *)
 
   let image = RTCCamera.render camera world in
   let ppm = RTCCanvas.to_ppm image in
