@@ -1,7 +1,7 @@
 # OCaml Ray Tracer
 
 This is an implementation of a basic recursive (Whitted) ray tracer,
-in OCaml, following my book, "The Ray Tracer Challenge". It implements the following primitives:
+in OCaml, following my book, "The Ray Tracer Challenge" (http://www.raytracerchallenge.com). It implements the following primitives:
 
 * Spheres
 * Planes
