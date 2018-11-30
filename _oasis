@@ -1,8 +1,8 @@
 Name: RTC
-Version: 0.1
+Version: 1.0
 Synopsis: A ray tracer implementation from the "Ray Tracer Challenge" book
 Authors: Jamis Buck <jamis@jamisbuck.org>
-License: LGPL with OCaml linking exception
+License: MIT
 
 Description: The Ray Tracer Challenge, by Jamis Buck.
 Homepage: http://www.raytracerchallenge.com
@@ -16,7 +16,8 @@ Library rtc
   Modules: RTCConst, RTCTuple, RTCColor, RTCCanvas, RTCMatrix, RTCTransform,
            RTCRay, RTCShape, RTCSphere, RTCIntersection, RTCLight, RTCMaterial,
            RTCWorld, RTCComps, RTCCamera, RTCPlane, RTCPattern, RTCComposition,
-           RTCCube, RTCConic, RTCCylinder, RTCCone, RTCGroup, RTCTriangle
+           RTCCube, RTCConic, RTCCylinder, RTCCone, RTCGroup, RTCTriangle,
+           RTCCSG
 
 Executable test
   Install: false

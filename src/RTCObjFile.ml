@@ -1,3 +1,5 @@
+(* Routines for parsing (a subset of) Wavefront OBJ files *)
+
 type t = { ignored_count : int;
            vertices : RTCTuple.t array;
            normals : RTCTuple.t array;
